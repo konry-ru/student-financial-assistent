@@ -4,25 +4,42 @@ public class StudentValidation {
     }
 
     static void checkAllValidations() {
-        checkCityRegistryDepartment();
-        checkStudentsList();
-        checkIsMarrige();
-        checkChildren();
+        StudentRequest sr = readStudentRequest();
+
+        AnswerCityRegistry answerCityRegistry = checkCityRegistryDepartment(sr);
+        AnswerIsStudent answerIsStudent = checkStudentsList(sr);
+        AnswerIsMarriage answerIsMarriage = checkIsMarriage(sr);
+        AnswerHasChildren answerHasChildren = checkChildren(sr);
+
+        sendMail();
     }
 
-    static void checkCityRegistryDepartment() {
+    static StudentRequest readStudentRequest() {
+        System.out.println("Получение студенческой заявки из хранилища...");
+        return new StudentRequest();
+    }
+
+    static AnswerCityRegistry checkCityRegistryDepartment(StudentRequest sr) {
         System.out.println("Проверка прописки студента подавшего заявление...");
+        return new AnswerCityRegistry();
     }
 
-    static void checkStudentsList() {
+    static AnswerIsStudent checkStudentsList(StudentRequest sr) {
         System.out.println("Проверка является ли заявитель студентом...");
+        return new AnswerIsStudent();
     }
 
-    static void checkIsMarrige() {
+    static AnswerIsMarriage checkIsMarriage(StudentRequest sr) {
         System.out.println("Проверка семейного положения...");
+        return new AnswerIsMarriage();
     }
 
-    static void checkChildren() {
+    static AnswerHasChildren checkChildren(StudentRequest sr) {
         System.out.println("Проверка сведений о детях через ЗАГС...");
+        return new AnswerHasChildren();
+    }
+
+    static void sendMail() {
+        System.out.println("Отправка сообщения о успешной или неуспешной регистрации завки...");
     }
 }

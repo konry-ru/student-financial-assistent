@@ -8,15 +8,6 @@ public class RequestRegistration {
         sr1.wLastName = "Корчажкина";
         long id = registryRequest(sr1);
         System.out.println("Заявка зарегистрирована. Номер заявки " + id);
-
-        StudentRequest sr2;
-        sr2 = new StudentRequest();
-        sr2.hFirstName = "Иван";
-        sr2.hLastName = "Сусанин";
-        sr2.wFirstName = "Елена";
-        sr2.wLastName = "Сусанина";
-        id = registryRequest(sr2);
-        System.out.println("Заявка зарегистрирована. Номер заявки " + id);
     }
 
     static long registryRequest(StudentRequest studentRequest) {
