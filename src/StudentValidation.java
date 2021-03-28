@@ -4,24 +4,37 @@ public class StudentValidation {
     }
 
     static void checkAllValidations() {
-        StudentRequest sr = readStudentRequest();
 
-        AnswerCityRegistry answerCityRegistry = checkCityRegistryDepartment(sr);
-        AnswerIsStudent answerIsStudent = checkStudentsList(sr);
-        AnswerIsMarriage answerIsMarriage = checkIsMarriage(sr);
-        AnswerHasChildren answerHasChildren = checkChildren(sr);
+        while(true) {
+            StudentRequest sr = readStudentRequest();
+            System.out.println("Start");
 
-        sendMail();
+            if(sr == null) break;
+            System.out.println("After break");
+
+            AnswerCityRegistry answerCityRegistry = checkCityRegistryDepartment(sr);
+            if(!answerCityRegistry.success) continue;
+
+            AnswerIsStudent answerIsStudent = checkStudentsList(sr);
+            AnswerIsMarriage answerIsMarriage = checkIsMarriage(sr);
+            AnswerHasChildren answerHasChildren = checkChildren(sr);
+
+            sendMail();
+        }
+        System.out.println("Finish");
     }
 
     static StudentRequest readStudentRequest() {
         System.out.println("Получение студенческой заявки из хранилища...");
-        return new StudentRequest();
+        StudentRequest studentRequest = new StudentRequest();
+        return studentRequest;
     }
 
     static AnswerCityRegistry checkCityRegistryDepartment(StudentRequest sr) {
         System.out.println("Проверка прописки студента подавшего заявление...");
-        return new AnswerCityRegistry();
+        AnswerCityRegistry answerCityRegistry = new AnswerCityRegistry();
+        answerCityRegistry.success = false;
+        return answerCityRegistry;
     }
 
     static AnswerIsStudent checkStudentsList(StudentRequest sr) {
