@@ -7,13 +7,11 @@ public class StudentValidation {
 
         while(true) {
             StudentRequest sr = readStudentRequest();
-            System.out.println("Start");
 
             if(sr == null) break;
-            System.out.println("After break");
 
-            AnswerCityRegistry answerCityRegistry = checkCityRegistryDepartment(sr);
-            if(!answerCityRegistry.success) continue;
+            AnswerCityRegistry answerCityRegistry = checkCityRegistry(sr);
+            if(!answerCityRegistry.success) break;
 
             AnswerIsStudent answerIsStudent = checkStudentsList(sr);
             AnswerIsMarriage answerIsMarriage = checkIsMarriage(sr);
@@ -30,11 +28,13 @@ public class StudentValidation {
         return studentRequest;
     }
 
-    static AnswerCityRegistry checkCityRegistryDepartment(StudentRequest sr) {
-        System.out.println("Проверка прописки студента подавшего заявление...");
-        AnswerCityRegistry answerCityRegistry = new AnswerCityRegistry();
-        answerCityRegistry.success = false;
-        return answerCityRegistry;
+    static AnswerCityRegistry checkCityRegistry(StudentRequest sr) {
+        CityRegistryValidator crv = new CityRegistryValidator();
+        crv.hostName = "Host_1";
+        crv.login = "Login_1";
+        crv.password = "Password_1";
+        AnswerCityRegistry ansCR = crv.checkCityRegistry(sr);
+        return ansCR;
     }
 
     static AnswerIsStudent checkStudentsList(StudentRequest sr) {
