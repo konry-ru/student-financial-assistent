@@ -1,3 +1,7 @@
+package ru.konry.stud_fin_assistent;
+
+import ru.konry.stud_fin_assistent.domains.StudentRequest;
+
 public class RequestRegistration {
     public static void main(String[] args) {
         StudentRequest sr1;

@@ -1,4 +1,18 @@
-public class StudentValidation {
+package ru.konry.stud_fin_assistent;
+
+import ru.konry.stud_fin_assistent.answers.AnswerCityRegistry;
+import ru.konry.stud_fin_assistent.answers.AnswerHasChildren;
+import ru.konry.stud_fin_assistent.answers.AnswerIsMarried;
+import ru.konry.stud_fin_assistent.answers.AnswerIsStudent;
+import ru.konry.stud_fin_assistent.domains.StudentRequest;
+import ru.konry.stud_fin_assistent.mail.MailSender;
+import ru.konry.stud_fin_assistent.validators.ChildrenValidator;
+import ru.konry.stud_fin_assistent.validators.CityRegistryValidator;
+import ru.konry.stud_fin_assistent.validators.MarriageValidator;
+import ru.konry.stud_fin_assistent.validators.StudentListValidator;
+
+public class StudentRequestHandler {
+
     public static void main(String[] args) {
         checkAllValidations();
     }
@@ -34,7 +48,6 @@ public class StudentValidation {
         CityRegistryValidator crv = new CityRegistryValidator();
         crv.hostName = "Host_1";
         crv.login = "Login_1";
-        crv.password = "Password_1";
         AnswerCityRegistry ansCR = crv.checkCityRegistry(sr);
         return ansCR;
     }
@@ -42,8 +55,6 @@ public class StudentValidation {
     static AnswerIsStudent checkStudentsList(StudentRequest sr) {
         StudentListValidator stListValid = new StudentListValidator();
         stListValid.hostName = "Host_for_check_is_student";
-        stListValid.login = "Validator_1";
-        stListValid.password = "1234:)";
         return stListValid.checkStList(sr);
     }
 

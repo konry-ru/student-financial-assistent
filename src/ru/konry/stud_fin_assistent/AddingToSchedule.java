@@ -1,3 +1,5 @@
+package ru.konry.stud_fin_assistent;
+
 public class AddingToSchedule {
     public static void main(String[] args) {
         setSchedule();

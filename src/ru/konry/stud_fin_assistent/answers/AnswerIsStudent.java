@@ -1,6 +1,8 @@
+package ru.konry.stud_fin_assistent.answers;
+
 public class AnswerIsStudent {
-    boolean success;
-    AnswerIsStudent() {
+    public boolean success;
+    public AnswerIsStudent() {
         System.out.println("Это ответ из студенческого архива!");
     }
 }

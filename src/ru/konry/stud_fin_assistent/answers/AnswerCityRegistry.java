@@ -1,6 +1,8 @@
+package ru.konry.stud_fin_assistent.answers;
+
 public class AnswerCityRegistry {
-    boolean success;
-    AnswerCityRegistry() {
+    public boolean success;
+    public AnswerCityRegistry() {
         System.out.println("Это ответ из городского департамента!");
     }
 }

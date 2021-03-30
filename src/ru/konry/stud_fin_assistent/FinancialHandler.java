@@ -1,3 +1,5 @@
+package ru.konry.stud_fin_assistent;
+
 public class FinancialHandler {
     public static void main(String[] args) {
         handleFinance();
