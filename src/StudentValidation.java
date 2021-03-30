@@ -16,10 +16,11 @@ public class StudentValidation {
             AnswerIsStudent answerIsStudent = checkStudentsList(sr);
             if(!answerIsStudent.success) break;
 
-            AnswerIsMarriage answerIsMarriage = checkIsMarriage(sr);
+            AnswerIsMarried answerIsMarried = checkIsMarried(sr);
             AnswerHasChildren answerHasChildren = checkChildren(sr);
 
             sendMail();
+            break;
         }
     }
 
@@ -46,17 +47,18 @@ public class StudentValidation {
         return stListValid.checkStList(sr);
     }
 
-    static AnswerIsMarriage checkIsMarriage(StudentRequest sr) {
-        System.out.println("Проверка семейного положения...");
-        return new AnswerIsMarriage();
+    static AnswerIsMarried checkIsMarried(StudentRequest sr) {
+
+        MarriageValidator marValid = new MarriageValidator();
+        return marValid.checkIsMarried(sr);
     }
 
     static AnswerHasChildren checkChildren(StudentRequest sr) {
-        System.out.println("Проверка сведений о детях через ЗАГС...");
-        return new AnswerHasChildren();
+
+        return new ChildrenValidator().checkChildren(sr);
     }
 
     static void sendMail() {
-        System.out.println("Отправка сообщения о успешной или неуспешной регистрации завки...");
+        new MailSender().sendMail();
     }
 }
