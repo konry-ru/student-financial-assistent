@@ -14,12 +14,13 @@ public class StudentValidation {
             if(!answerCityRegistry.success) break;
 
             AnswerIsStudent answerIsStudent = checkStudentsList(sr);
+            if(!answerIsStudent.success) break;
+
             AnswerIsMarriage answerIsMarriage = checkIsMarriage(sr);
             AnswerHasChildren answerHasChildren = checkChildren(sr);
 
             sendMail();
         }
-        System.out.println("Finish");
     }
 
     static StudentRequest readStudentRequest() {
@@ -38,8 +39,11 @@ public class StudentValidation {
     }
 
     static AnswerIsStudent checkStudentsList(StudentRequest sr) {
-        System.out.println("Проверка является ли заявитель студентом...");
-        return new AnswerIsStudent();
+        StudentListValidator stListValid = new StudentListValidator();
+        stListValid.hostName = "Host_for_check_is_student";
+        stListValid.login = "Validator_1";
+        stListValid.password = "1234:)";
+        return stListValid.checkStList(sr);
     }
 
     static AnswerIsMarriage checkIsMarriage(StudentRequest sr) {

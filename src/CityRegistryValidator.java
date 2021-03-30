@@ -7,7 +7,7 @@ public class CityRegistryValidator {
         System.out.println("Проверка прописки студента подавшего заявление..." +
                 hostName + ", " + login + ", " + password);
         AnswerCityRegistry ansCR = new AnswerCityRegistry();
-        ansCR.success = false;
+        ansCR.success = true;
         return ansCR;
     }
 }
