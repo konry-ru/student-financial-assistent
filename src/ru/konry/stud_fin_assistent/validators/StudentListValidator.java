@@ -1,6 +1,6 @@
 package ru.konry.stud_fin_assistent.validators;
 
-import ru.konry.stud_fin_assistent.answers.AnswerIsStudent;
+import ru.konry.stud_fin_assistent.domains.AnswerIsStudent;
 import ru.konry.stud_fin_assistent.domains.StudentRequest;
 
 public class StudentListValidator {
