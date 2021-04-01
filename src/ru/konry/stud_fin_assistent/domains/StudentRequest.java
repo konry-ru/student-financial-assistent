@@ -1,41 +1,32 @@
 package ru.konry.stud_fin_assistent.domains;
 
 public class StudentRequest {
-    private String hFirstName;
-    private String hLastName;
-    private String wFirstName;
-    private String wLastName;
 
-    public String gethFirstName() {
-        return hFirstName;
+    private Adult husband = new Adult();
+    private Adult wife = new Adult();
+    private Child child = new Child();
+
+    public Adult getHusband() {
+        return husband;
     }
 
-    public void sethFirstName(String hFirstName) {
-        this.hFirstName = hFirstName;
+    public void setHusband(Adult husband) {
+        this.husband = husband;
     }
 
-    public String gethLastName() {
-        return hLastName;
+    public Adult getWife() {
+        return wife;
     }
 
-    public void sethLastName(String hLastName) {
-        this.hLastName = hLastName;
+    public void setWife(Adult wife) {
+        this.wife = wife;
     }
 
-    public String getwFirstName() {
-        return wFirstName;
+    public Child getChild() {
+        return child;
     }
 
-    public void setwFirstName(String wFirstName) {
-        this.wFirstName = wFirstName;
+    public void setChild(Child child) {
+        this.child = child;
     }
-
-    public String getwLastName() {
-        return wLastName;
-    }
-
-    public void setwLastName(String wLastName) {
-        this.wLastName = wLastName;
-    }
-
 }
