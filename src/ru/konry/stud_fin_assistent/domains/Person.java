@@ -3,15 +3,16 @@ package ru.konry.stud_fin_assistent.domains;
 import java.time.LocalDate;
 
 public class Person {
-    private String name;
-    private String surname;
-    private String patronymic;
-    private int postalCode;
-    private String street;
-    private int building;
-    private int corpus;
-    private int apartment;
+
+    protected String name;
+    protected String surname;
+    protected String patronymic;
+    private Adress adress = new Adress();
     private LocalDate birthData;
+
+    public String getPersonString() {
+        return name + " " + surname;
+    }
 
     public String getName() {
         return name;
@@ -37,44 +38,12 @@ public class Person {
         this.patronymic = patronymic;
     }
 
-    public int getPostalCode() {
-        return postalCode;
+    public Adress getAdress() {
+        return adress;
     }
 
-    public void setPostalCode(int postalCode) {
-        this.postalCode = postalCode;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public int getBuilding() {
-        return building;
-    }
-
-    public void setBuilding(int building) {
-        this.building = building;
-    }
-
-    public int getCorpus() {
-        return corpus;
-    }
-
-    public void setCorpus(int corpus) {
-        this.corpus = corpus;
-    }
-
-    public int getApartment() {
-        return apartment;
-    }
-
-    public void setApartment(int apartment) {
-        this.apartment = apartment;
+    public void setAdress(Adress adress) {
+        this.adress = adress;
     }
 
     public LocalDate getBirthData() {
