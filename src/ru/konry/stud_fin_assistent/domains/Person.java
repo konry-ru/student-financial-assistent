@@ -2,7 +2,7 @@ package ru.konry.stud_fin_assistent.domains;
 
 import java.time.LocalDate;
 
-public class Person {
+public abstract class Person {
 
     protected String name;
     protected String surname;

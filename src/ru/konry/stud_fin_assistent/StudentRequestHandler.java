@@ -13,11 +13,28 @@ import ru.konry.stud_fin_assistent.validators.StudentListValidator;
 
 public class StudentRequestHandler {
 
-    public static void main(String[] args) {
-        checkAllValidations();
+    StudentRequest stRequest;
+    CityRegistryValidator crValidator;
+    StudentListValidator slValidator;
+    MarriageValidator mrValidator;
+    ChildrenValidator chValidator;
+    MailSender mlSender;
+
+    public StudentRequestHandler() {
+        stRequest = new StudentRequest();
+        crValidator = new CityRegistryValidator();
+        slValidator = new StudentListValidator();
+        mrValidator = new MarriageValidator();
+        chValidator = new ChildrenValidator();
+        mlSender = new MailSender();
     }
 
-    static void checkAllValidations() {
+    public static void main(String[] args) {
+        StudentRequestHandler srHandler = new StudentRequestHandler();
+        srHandler.checkAllValidations();
+    }
+
+    public void checkAllValidations() {
 
         while(true) {
             StudentRequest sr = readStudentRequest();
@@ -38,38 +55,32 @@ public class StudentRequestHandler {
         }
     }
 
-    static StudentRequest readStudentRequest() {
+    public StudentRequest readStudentRequest() {
         System.out.println("Получение студенческой заявки из хранилища...");
-        StudentRequest studentRequest = new StudentRequest();
-        return studentRequest;
+        return stRequest;
     }
 
-    static AnswerCityRegistry checkCityRegistry(StudentRequest sr) {
-        CityRegistryValidator crv = new CityRegistryValidator();
-        crv.hostName = "Host_1";
-        crv.login = "Login_1";
-        AnswerCityRegistry ansCR = crv.checkCityRegistry(sr);
+    public AnswerCityRegistry checkCityRegistry(StudentRequest sr) {
+        crValidator.hostName = "Host_1";
+        crValidator.login = "Login_1";
+        AnswerCityRegistry ansCR = crValidator.checkCityRegistry(sr);
         return ansCR;
     }
 
-    static AnswerIsStudent checkStudentsList(StudentRequest sr) {
-        StudentListValidator stListValid = new StudentListValidator();
-        stListValid.hostName = "Host_for_check_is_student";
-        return stListValid.checkStList(sr);
+    public AnswerIsStudent checkStudentsList(StudentRequest sr) {
+        slValidator.hostName = "Host_for_check_is_student";
+        return slValidator.checkStList(sr);
     }
 
-    static AnswerIsMarried checkIsMarried(StudentRequest sr) {
-
-        MarriageValidator marValid = new MarriageValidator();
-        return marValid.checkIsMarried(sr);
+    public AnswerIsMarried checkIsMarried(StudentRequest sr) {
+        return mrValidator.checkIsMarried(sr);
     }
 
-    static AnswerHasChildren checkChildren(StudentRequest sr) {
-
-        return new ChildrenValidator().checkChildren(sr);
+    public AnswerHasChildren checkChildren(StudentRequest sr) {
+        return chValidator.checkChildren(sr);
     }
 
-    static void sendMail() {
-        new MailSender().sendMail();
+    public void sendMail() {
+        mlSender.sendMail();
     }
 }

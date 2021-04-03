@@ -1,4 +1,4 @@
-package ru.konry.stud_fin_assistent.domains.other;
+package ru.konry.stud_fin_assistent.domains;
 
 import ru.konry.stud_fin_assistent.domains.Person;
 
