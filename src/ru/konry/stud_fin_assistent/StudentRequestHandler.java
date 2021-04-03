@@ -13,7 +13,6 @@ import ru.konry.stud_fin_assistent.validators.StudentListValidator;
 
 public class StudentRequestHandler {
 
-    StudentRequest stRequest;
     CityRegistryValidator crValidator;
     StudentListValidator slValidator;
     MarriageValidator mrValidator;
@@ -21,7 +20,6 @@ public class StudentRequestHandler {
     MailSender mlSender;
 
     public StudentRequestHandler() {
-        stRequest = new StudentRequest();
         crValidator = new CityRegistryValidator();
         slValidator = new StudentListValidator();
         mrValidator = new MarriageValidator();
@@ -34,30 +32,30 @@ public class StudentRequestHandler {
         srHandler.checkAllValidations();
     }
 
+    public StudentRequest[] readStudentRequests() {
+        System.out.println("Получение студенческих заявок из хранилища...");
+        StudentRequest[] stRequestsArray = new StudentRequest[3];
+        for(int c = 0; c < stRequestsArray.length; c++) {
+            stRequestsArray[c] = RequestRegistration.createStudentRequest(c);
+        }
+        return stRequestsArray;
+    }
+
     public void checkAllValidations() {
 
-        while(true) {
-            StudentRequest sr = readStudentRequest();
-
-            if(sr == null) break;
-
-            AnswerCityRegistry answerCityRegistry = checkCityRegistry(sr);
-            if(!answerCityRegistry.success) break;
-
-            AnswerIsStudent answerIsStudent = checkStudentsList(sr);
-            if(!answerIsStudent.success) break;
-
-            AnswerIsMarried answerIsMarried = checkIsMarried(sr);
-            AnswerHasChildren answerHasChildren = checkChildren(sr);
-
-            sendMail();
-            break;
+        StudentRequest[] stRequests = readStudentRequests();
+        for (StudentRequest stRequest : stRequests) {
+            System.out.println();
+            checkOneStudentRequest(stRequest);
         }
     }
 
-    public StudentRequest readStudentRequest() {
-        System.out.println("Получение студенческой заявки из хранилища...");
-        return stRequest;
+    public void checkOneStudentRequest(StudentRequest sr) {
+        AnswerCityRegistry answerCityRegistry = checkCityRegistry(sr);
+        AnswerIsStudent answerIsStudent = checkStudentsList(sr);
+        AnswerIsMarried answerIsMarried = checkIsMarried(sr);
+        AnswerHasChildren answerHasChildren = checkChildren(sr);
+        sendMail();
     }
 
     public AnswerCityRegistry checkCityRegistry(StudentRequest sr) {

@@ -7,27 +7,22 @@ import ru.konry.stud_fin_assistent.domains.StudentRequest;
 public class RequestRegistration {
     public static void main(String[] args) {
 
-        StudentRequest sr = createStudentRequest();
+        StudentRequest sr = createStudentRequest(42);
 
-        long id = registryRequest(sr);
+        saveStudentRequest(sr);
         System.out.println("Заявка зарегистрирована. Номер заявки " +
-                id + " Студент " + sr.getHusband().getPersonString());
+                sr.getStudentRequestId() + " Студент " + sr.getHusband().getPersonString());
     }
 
-    static long registryRequest(StudentRequest sr) {
-        long answer = 42;
-        System.out.println("Регистрация заявки студента... "
+    static void saveStudentRequest(StudentRequest sr) {
+        System.out.println("Сохранение заявки студента... "
                 + sr.getHusband().getName()  + " " + sr.getHusband().getSurname());
-        return answer;
     }
 
-    static StudentRequest createStudentRequest() {
+    static StudentRequest createStudentRequest(long id) {
         StudentRequest sr = new StudentRequest();
-        Adult husband = new Adult();
-        husband.setName("Константин");
-        husband.setSurname("Корчагин");
-        husband.setPassportNumber(123456);
-        sr.setHusband(husband);
+        sr.setStudentRequestId(id);
+        System.out.println("Создана заявка id: " + id);
         return  sr;
     }
 }
