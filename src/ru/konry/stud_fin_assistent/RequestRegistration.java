@@ -14,8 +14,6 @@ public class RequestRegistration {
     }
 
     static void saveStudentRequest(StudentRequest sr) {
-        System.out.println("Сохранение заявки студента... "
-                + sr.getHusband().getName()  + " " + sr.getHusband().getSurname());
     }
 
     static void printStR(StudentRequest sreq) {

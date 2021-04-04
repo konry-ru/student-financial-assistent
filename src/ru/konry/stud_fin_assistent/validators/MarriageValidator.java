@@ -6,7 +6,6 @@ import ru.konry.stud_fin_assistent.domains.StudentRequest;
 public class MarriageValidator {
 
     public AnswerIsMarried checkIsMarried(StudentRequest sr) {
-        System.out.println("Проверка семейного положения...");
         return new AnswerIsMarried();
     }
 }
