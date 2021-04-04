@@ -1,7 +1,6 @@
 package ru.konry.stud_fin_assistent.validators;
 
-import ru.konry.stud_fin_assistent.domains.AnswerCityRegistry;
-import ru.konry.stud_fin_assistent.domains.StudentRequest;
+import ru.konry.stud_fin_assistent.domains.*;
 
 public class CityRegistryValidator {
     public String hostName;

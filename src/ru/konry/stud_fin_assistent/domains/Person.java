@@ -10,8 +10,15 @@ public abstract class Person {
     private Adress adress = new Adress();
     private LocalDate birthData;
 
-    public String getPersonString() {
-        return name + " " + surname;
+    public Person() {
+
+    }
+
+    public Person(String name, String surname, String patronymic, LocalDate birthData) {
+        this.name = name;
+        this.surname = surname;
+        this.patronymic = patronymic;
+        this.birthData = birthData;
     }
 
     public String getName() {

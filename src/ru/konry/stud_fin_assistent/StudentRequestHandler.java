@@ -1,15 +1,8 @@
 package ru.konry.stud_fin_assistent;
 
-import ru.konry.stud_fin_assistent.domains.AnswerCityRegistry;
-import ru.konry.stud_fin_assistent.domains.AnswerHasChildren;
-import ru.konry.stud_fin_assistent.domains.AnswerIsMarried;
-import ru.konry.stud_fin_assistent.domains.AnswerIsStudent;
-import ru.konry.stud_fin_assistent.domains.StudentRequest;
-import ru.konry.stud_fin_assistent.mail.MailSender;
-import ru.konry.stud_fin_assistent.validators.ChildrenValidator;
-import ru.konry.stud_fin_assistent.validators.CityRegistryValidator;
-import ru.konry.stud_fin_assistent.validators.MarriageValidator;
-import ru.konry.stud_fin_assistent.validators.StudentListValidator;
+import ru.konry.stud_fin_assistent.domains.*;
+import ru.konry.stud_fin_assistent.mail.*;
+import ru.konry.stud_fin_assistent.validators.*;
 
 public class StudentRequestHandler {
 

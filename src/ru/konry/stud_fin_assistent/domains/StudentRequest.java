@@ -3,7 +3,7 @@ package ru.konry.stud_fin_assistent.domains;
 public class StudentRequest {
 
     private long studentRequestId;
-    private Adult husband = new Adult();
+    private Adult husband = new Adult("John", "Smith", "Chattab", null, "SpGU");
     private Adult wife = new Adult();
     private Child child = new Child();
 

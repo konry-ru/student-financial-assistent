@@ -1,7 +1,5 @@
 package ru.konry.stud_fin_assistent.domains;
 
-import ru.konry.stud_fin_assistent.domains.Person;
-
 import java.time.LocalDate;
 
 public class Adult extends Person {
@@ -13,8 +11,13 @@ public class Adult extends Person {
     private String university;
     private String studentId;
 
-    public String getPersonString() {
-        return name + " " + surname + " " + passportNumber;
+    public Adult() {
+
+    }
+
+    public Adult(String name, String surname, String patronymic, LocalDate birthData, String university) {
+        super(name, surname, patronymic, birthData);
+        this.university = university;
     }
 
     public int getPassportSeries() {

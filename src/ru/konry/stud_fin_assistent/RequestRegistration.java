@@ -1,8 +1,6 @@
 package ru.konry.stud_fin_assistent;
 
-import ru.konry.stud_fin_assistent.domains.Adult;
-import ru.konry.stud_fin_assistent.domains.Person;
-import ru.konry.stud_fin_assistent.domains.StudentRequest;
+import ru.konry.stud_fin_assistent.domains.*;
 
 public class RequestRegistration {
     public static void main(String[] args) {
@@ -11,7 +9,7 @@ public class RequestRegistration {
 
         saveStudentRequest(sr);
         System.out.println("Заявка зарегистрирована. Номер заявки " +
-                sr.getStudentRequestId() + " Студент " + sr.getHusband().getPersonString());
+                sr.getStudentRequestId() + " Студент " + sr.getHusband().getName() + " " + sr.getHusband().getSurname());
     }
 
     static void saveStudentRequest(StudentRequest sr) {
