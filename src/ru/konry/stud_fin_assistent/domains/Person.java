@@ -7,7 +7,7 @@ public abstract class Person {
     protected String name;
     protected String surname;
     protected String patronymic;
-    private Adress adress = new Adress();
+    private Address adress = new Address();
     private LocalDate birthData;
 
     public Person() {
@@ -45,11 +45,11 @@ public abstract class Person {
         this.patronymic = patronymic;
     }
 
-    public Adress getAdress() {
+    public Address getAdress() {
         return adress;
     }
 
-    public void setAdress(Adress adress) {
+    public void setAdress(Address adress) {
         this.adress = adress;
     }
 

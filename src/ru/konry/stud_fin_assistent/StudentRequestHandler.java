@@ -20,13 +20,7 @@ public class StudentRequestHandler {
         mlSender = new MailSender();
     }
 
-    public static void main(String[] args) {
-        StudentRequestHandler srHandler = new StudentRequestHandler();
-        srHandler.checkAllValidations();
-    }
-
     public StudentRequest[] readStudentRequests() {
-        System.out.println("Получение студенческих заявок из хранилища...");
         StudentRequest[] stRequestsArray = new StudentRequest[3];
         for(int c = 0; c < stRequestsArray.length; c++) {
             stRequestsArray[c] = RequestRegistration.createStudentRequest(c);
@@ -38,17 +32,16 @@ public class StudentRequestHandler {
 
         StudentRequest[] stRequests = readStudentRequests();
         for (StudentRequest stRequest : stRequests) {
-            System.out.println();
             checkOneStudentRequest(stRequest);
         }
     }
 
     public void checkOneStudentRequest(StudentRequest sr) {
         AnswerCityRegistry answerCityRegistry = checkCityRegistry(sr);
-        AnswerIsStudent answerIsStudent = checkStudentsList(sr);
-        AnswerIsMarried answerIsMarried = checkIsMarried(sr);
-        AnswerHasChildren answerHasChildren = checkChildren(sr);
-        sendMail();
+//        AnswerIsStudent answerIsStudent = checkStudentsList(sr);
+//        AnswerIsMarried answerIsMarried = checkIsMarried(sr);
+//        AnswerHasChildren answerHasChildren = checkChildren(sr);
+//        sendMail();
     }
 
     public AnswerCityRegistry checkCityRegistry(StudentRequest sr) {
@@ -73,5 +66,10 @@ public class StudentRequestHandler {
 
     public void sendMail() {
         mlSender.sendMail();
+    }
+
+    public static void main(String[] args) {
+        StudentRequestHandler srHandler = new StudentRequestHandler();
+        srHandler.checkAllValidations();
     }
 }

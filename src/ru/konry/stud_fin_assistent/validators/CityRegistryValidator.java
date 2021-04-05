@@ -18,20 +18,11 @@ public class CityRegistryValidator {
 
         try {
             CityRegisterCheckerResponse hans = personChecker.checkPerson(sr.getHusband());
-        } catch (CityRegisterException e) {
-            e.printStackTrace();
-        }
-        try {
             CityRegisterCheckerResponse wans = personChecker.checkPerson(sr.getWife());
-        } catch (CityRegisterException e) {
-            e.printStackTrace();
-        }
-        try {
             CityRegisterCheckerResponse cans = personChecker.checkPerson(sr.getChild());
         } catch (CityRegisterException e) {
             e.printStackTrace();
         }
-
         return new AnswerCityRegistry();
     }
 }

@@ -4,15 +4,23 @@ import java.time.LocalDate;
 
 public class Child extends Person {
 
-    private int certificateId;
+    private String certificateId;
     private String issueDepartment;
     private LocalDate issueData;
+    private Address address;
 
-    public int getCertificateId() {
+    public Child() {
+
+    }
+    public Child(String name, String surname, String patronymic, LocalDate birthData) {
+        super(name, surname, patronymic, birthData);
+    }
+
+    public String getCertificateId() {
         return certificateId;
     }
 
-    public void setCertificateId(int certificateId) {
+    public void setCertificateId(String certificateId) {
         this.certificateId = certificateId;
     }
 
@@ -30,5 +38,13 @@ public class Child extends Person {
 
     public void setIssueData(LocalDate issueData) {
         this.issueData = issueData;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }
