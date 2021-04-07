@@ -33,16 +33,24 @@ public class RequestRegistration {
         wife.setStudentId("" + (2000 + id));
         wife.setAdress(address);
 
-        //Ребенок
-        Child child = new Child("Елизавета", "Константиновна", "Корчагина", LocalDate.of(2020, 1, 12));
-        child.setCertificateId("" + (1234500 + id));
-        child.setIssueData(LocalDate.of(2020, 2, 11));
-        child.setIssueDepartment("Отдел ЗАГС №" + id);
-        child.setAddress(address);
+        //Ребенок 1
+        Child child1 = new Child("Елизавета", "Константиновна", "Корчагина", LocalDate.of(2020, 1, 12));
+        child1.setCertificateId("" + (300000 + id));
+        child1.setIssueData(LocalDate.of(2020, 2, 11));
+        child1.setIssueDepartment("Отдел ЗАГС №" + id);
+        child1.setAddress(address);
+
+        //Ребенок 1
+        Child child2 = new Child("Артем", "Константинович", "Корчагин", LocalDate.of(2020, 1, 12));
+        child2.setCertificateId("" + (400000 + id));
+        child2.setIssueData(LocalDate.of(2020, 2, 11));
+        child2.setIssueDepartment("Отдел ЗАГС №" + id);
+        child2.setAddress(address);
 
         sr.setHusband(husband);
         sr.setWife(wife);
-        sr.setChild(child);
+        sr.addChild(child1);
+        sr.addChild(child2);
 
         return  sr;
     }

@@ -21,7 +21,7 @@ public class StudentRequestHandler {
     }
 
     public StudentRequest[] readStudentRequests() {
-        StudentRequest[] stRequestsArray = new StudentRequest[3];
+        StudentRequest[] stRequestsArray = new StudentRequest[1];
         for(int c = 0; c < stRequestsArray.length; c++) {
             stRequestsArray[c] = RequestRegistration.createStudentRequest(c);
         }

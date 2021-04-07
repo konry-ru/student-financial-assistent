@@ -1,13 +1,14 @@
 package ru.konry.stud_fin_assistent.domains;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class StudentRequest {
 
     private long studentRequestId;
     private Adult husband;
     private Adult wife;
-    private Child child;
+    private ArrayList<Child> children;
     private String marriageCertificateId;
     private LocalDate marriageDate;
     private String marriageOffice;
@@ -36,12 +37,15 @@ public class StudentRequest {
         this.wife = wife;
     }
 
-    public Child getChild() {
-        return child;
+    public ArrayList<Child> getChildren() {
+        return children;
     }
 
-    public void setChild(Child child) {
-        this.child = child;
+    public void addChild(Child child) {
+        if(this.children == null) {
+            children = new ArrayList<>(5);
+        }
+        children.add(child);
     }
 
     public String getMarriageCertificateId() {
