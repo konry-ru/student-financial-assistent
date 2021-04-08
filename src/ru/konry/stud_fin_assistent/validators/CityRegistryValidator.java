@@ -1,7 +1,12 @@
 package ru.konry.stud_fin_assistent.validators;
 
 import ru.konry.stud_fin_assistent.domains.*;
+import ru.konry.stud_fin_assistent.domains.registry.AnswerCityRegistryItem;
 import ru.konry.stud_fin_assistent.exceptions.CityRegisterException;
+import ru.konry.stud_fin_assistent.domains.registry.AnswerCityRegistry;
+import ru.konry.stud_fin_assistent.domains.registry.CityRegisterResponse;
+
+import java.util.List;
 
 public class CityRegistryValidator {
     public String hostName;
@@ -15,19 +20,23 @@ public class CityRegistryValidator {
     }
 
     public AnswerCityRegistry checkCityRegistry(StudentRequest sr) {
+        AnswerCityRegistry ans = new AnswerCityRegistry();
+            ans.addItem(checkPerson(sr.getHusband()));
+            ans.addItem(checkPerson(sr.getWife()));
 
-        try {
-            CityRegisterCheckerResponse hans = personChecker.checkPerson(sr.getHusband());
-            System.out.println("Отец: " + hans);
-            CityRegisterCheckerResponse wans = personChecker.checkPerson(sr.getWife());
-            System.out.println("Мать: " + wans);
-            for(Child child: sr.getChildren()) {
-                CityRegisterCheckerResponse cans = personChecker.checkPerson(child);
-                System.out.println("Ребенок: " + cans);
+            List<Child> children = sr.getChildren();
+            for(Child child: children) {
+                ans.addItem(checkPerson(child));
             }
+        return ans;
+    }
+
+    private AnswerCityRegistryItem checkPerson(Person person) {
+        try {
+            CityRegisterResponse ans = personChecker.checkPerson(person);
         } catch (CityRegisterException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         }
-        return new AnswerCityRegistry();
+        return null;
     }
 }

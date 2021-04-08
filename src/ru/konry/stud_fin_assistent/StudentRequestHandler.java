@@ -1,8 +1,14 @@
 package ru.konry.stud_fin_assistent;
 
 import ru.konry.stud_fin_assistent.domains.*;
+import ru.konry.stud_fin_assistent.domains.children.AnswerHasChildren;
+import ru.konry.stud_fin_assistent.domains.student.AnswerIsStudent;
+import ru.konry.stud_fin_assistent.domains.wedding.AnswerIsMarried;
 import ru.konry.stud_fin_assistent.mail.*;
+import ru.konry.stud_fin_assistent.domains.registry.AnswerCityRegistry;
 import ru.konry.stud_fin_assistent.validators.*;
+
+import java.util.LinkedList;
 
 public class StudentRequestHandler {
 
@@ -20,17 +26,18 @@ public class StudentRequestHandler {
         mlSender = new MailSender();
     }
 
-    public StudentRequest[] readStudentRequests() {
-        StudentRequest[] stRequestsArray = new StudentRequest[1];
-        for(int c = 0; c < stRequestsArray.length; c++) {
-            stRequestsArray[c] = RequestRegistration.createStudentRequest(c);
+    public LinkedList<StudentRequest> readStudentRequests() {
+        LinkedList<StudentRequest> stRequestsList = new LinkedList<StudentRequest>();
+        for(int c = 0; c < 3; c++) {
+            StudentRequest newRequest = RequestRegistration.createStudentRequest(c);
+            stRequestsList.add(newRequest);
         }
-        return stRequestsArray;
+        return stRequestsList;
     }
 
     public void checkAllValidations() {
 
-        StudentRequest[] stRequests = readStudentRequests();
+        LinkedList<StudentRequest> stRequests = readStudentRequests();
         for (StudentRequest stRequest : stRequests) {
             checkOneStudentRequest(stRequest);
         }

@@ -2,6 +2,7 @@ package ru.konry.stud_fin_assistent.validators;
 
 import ru.konry.stud_fin_assistent.domains.*;
 import ru.konry.stud_fin_assistent.exceptions.CityRegisterException;
+import ru.konry.stud_fin_assistent.domains.registry.CityRegisterCheckerResponse;
 
 public class FakeCityRegisterChecker implements CityRegisterChecker {
     private static final String GOOD_1 = "1000";

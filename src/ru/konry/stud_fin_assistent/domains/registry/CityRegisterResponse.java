@@ -1,6 +1,6 @@
-package ru.konry.stud_fin_assistent.domains;
+package ru.konry.stud_fin_assistent.domains.registry;
 
-public class CityRegisterCheckerResponse {
+public class CityRegisterResponse {
 
     private boolean existing;
     private Boolean temporal;
