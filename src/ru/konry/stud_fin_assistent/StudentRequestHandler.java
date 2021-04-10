@@ -2,6 +2,7 @@ package ru.konry.stud_fin_assistent;
 
 import ru.konry.stud_fin_assistent.domains.*;
 import ru.konry.stud_fin_assistent.domains.children.AnswerHasChildren;
+import ru.konry.stud_fin_assistent.domains.registry.AnswerCityRegistryItem;
 import ru.konry.stud_fin_assistent.domains.student.AnswerIsStudent;
 import ru.konry.stud_fin_assistent.domains.wedding.AnswerIsMarried;
 import ru.konry.stud_fin_assistent.mail.*;
@@ -28,27 +29,31 @@ public class StudentRequestHandler {
 
     public LinkedList<StudentRequest> readStudentRequests() {
         LinkedList<StudentRequest> stRequestsList = new LinkedList<StudentRequest>();
-        for(int c = 0; c < 3; c++) {
+        for(int c = 0; c < 1; c++) {
             StudentRequest newRequest = RequestRegistration.createStudentRequest(c);
             stRequestsList.add(newRequest);
         }
         return stRequestsList;
     }
 
-    public void checkAllValidations() {
+    public LinkedList<AnswerCityRegistry> checkAllValidations() {
 
         LinkedList<StudentRequest> stRequests = readStudentRequests();
+        LinkedList<AnswerCityRegistry> answers = new LinkedList<>();
         for (StudentRequest stRequest : stRequests) {
-            checkOneStudentRequest(stRequest);
+            AnswerCityRegistry ans = checkOneStudentRequest(stRequest);
+            answers.add(ans);
         }
+        return answers;
     }
 
-    public void checkOneStudentRequest(StudentRequest sr) {
+    public AnswerCityRegistry checkOneStudentRequest(StudentRequest sr) {
         AnswerCityRegistry answerCityRegistry = checkCityRegistry(sr);
 //        AnswerIsStudent answerIsStudent = checkStudentsList(sr);
 //        AnswerIsMarried answerIsMarried = checkIsMarried(sr);
 //        AnswerHasChildren answerHasChildren = checkChildren(sr);
 //        sendMail();
+        return answerCityRegistry;
     }
 
     public AnswerCityRegistry checkCityRegistry(StudentRequest sr) {
@@ -77,6 +82,11 @@ public class StudentRequestHandler {
 
     public static void main(String[] args) {
         StudentRequestHandler srHandler = new StudentRequestHandler();
-        srHandler.checkAllValidations();
+        LinkedList<AnswerCityRegistry> answers = srHandler.checkAllValidations();
+        for(AnswerCityRegistry ans : answers) {
+            for(AnswerCityRegistryItem item : ans.getItems()) {
+                System.out.println(item);
+            }
+        }
     }
 }

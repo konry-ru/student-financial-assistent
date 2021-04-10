@@ -52,4 +52,13 @@ public class AnswerCityRegistryItem
     public CityError getError() {
         return error;
     }
+
+    @Override
+    public String toString() {
+        return "AnswerCityRegistryItem{" +
+                "status=" + status +
+                ", person=" + person +
+                ", error=" + error +
+                '}';
+    }
 }
