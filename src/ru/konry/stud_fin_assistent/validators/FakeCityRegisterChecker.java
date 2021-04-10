@@ -12,12 +12,11 @@ public class FakeCityRegisterChecker implements CityRegisterChecker {
     private static final String BAD_2 = "2001";
     private static final String ERROR_1 = "1002";
     private static final String ERROR_2 = "2002";
+    private static final String ERROR_T_1 = "1003";
+    private static final String ERROR_T_2 = "2003";
 
-    private static final String REG_ERROR_MESSAGE = "Fake CityRegistry ERROR :)";
-    private static final String REG_ERROR_CODE = "555";
-    private static final String TRANS_ERROR_MESSAGE = "DISCONNECT";
-
-    public CityRegisterResponse checkPerson(Person person) throws CityRegisterException, TransportException
+    public CityRegisterResponse checkPerson(Person person)
+            throws CityRegisterException, TransportException
     {
         CityRegisterResponse res = new CityRegisterResponse();
 
@@ -29,12 +28,17 @@ public class FakeCityRegisterChecker implements CityRegisterChecker {
                 res.setTemporal(false);
             }
             if(ps.equals(BAD_1) || ps.equals(BAD_2)) {
-                CityRegisterException ex = new CityRegisterException(REG_ERROR_MESSAGE, REG_ERROR_CODE);
-                throw ex;
+                res.setExisting(false);
             }
             if(ps.equals(ERROR_1) || ps.equals(ERROR_2)) {
-                TransportException tex = new TransportException(TRANS_ERROR_MESSAGE);
-                throw tex;
+                CityRegisterException ex =
+                        new CityRegisterException("1", "GRN_ERROR " + ps);
+                throw ex;
+            }
+            if(ps.equals(ERROR_T_1) || ps.equals(ERROR_T_2)) {
+                TransportException ex =
+                        new TransportException("Transport ERROR" + ps);
+                throw ex;
             }
         }
         if(person instanceof Child) {

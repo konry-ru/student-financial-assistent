@@ -29,31 +29,27 @@ public class StudentRequestHandler {
 
     public LinkedList<StudentRequest> readStudentRequests() {
         LinkedList<StudentRequest> stRequestsList = new LinkedList<StudentRequest>();
-        for(int c = 0; c < 1; c++) {
+        for(int c = 0; c < 4; c++) {
             StudentRequest newRequest = RequestRegistration.createStudentRequest(c);
             stRequestsList.add(newRequest);
         }
         return stRequestsList;
     }
 
-    public LinkedList<AnswerCityRegistry> checkAllValidations() {
+    public void checkAllValidations() {
 
         LinkedList<StudentRequest> stRequests = readStudentRequests();
-        LinkedList<AnswerCityRegistry> answers = new LinkedList<>();
         for (StudentRequest stRequest : stRequests) {
-            AnswerCityRegistry ans = checkOneStudentRequest(stRequest);
-            answers.add(ans);
+            checkOneStudentRequest(stRequest);
         }
-        return answers;
     }
 
-    public AnswerCityRegistry checkOneStudentRequest(StudentRequest sr) {
+    public void checkOneStudentRequest(StudentRequest sr) {
         AnswerCityRegistry answerCityRegistry = checkCityRegistry(sr);
 //        AnswerIsStudent answerIsStudent = checkStudentsList(sr);
 //        AnswerIsMarried answerIsMarried = checkIsMarried(sr);
 //        AnswerHasChildren answerHasChildren = checkChildren(sr);
 //        sendMail();
-        return answerCityRegistry;
     }
 
     public AnswerCityRegistry checkCityRegistry(StudentRequest sr) {
@@ -82,11 +78,6 @@ public class StudentRequestHandler {
 
     public static void main(String[] args) {
         StudentRequestHandler srHandler = new StudentRequestHandler();
-        LinkedList<AnswerCityRegistry> answers = srHandler.checkAllValidations();
-        for(AnswerCityRegistry ans : answers) {
-            for(AnswerCityRegistryItem item : ans.getItems()) {
-                System.out.println(item);
-            }
-        }
+        srHandler.checkAllValidations();
     }
 }
