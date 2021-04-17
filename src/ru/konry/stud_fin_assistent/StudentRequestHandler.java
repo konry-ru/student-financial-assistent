@@ -2,6 +2,7 @@ package ru.konry.stud_fin_assistent;
 
 import ru.konry.stud_fin_assistent.domains.*;
 import ru.konry.stud_fin_assistent.domains.children.AnswerHasChildren;
+import ru.konry.stud_fin_assistent.domains.registry.AnswerCityRegistryItem;
 import ru.konry.stud_fin_assistent.domains.student.AnswerIsStudent;
 import ru.konry.stud_fin_assistent.domains.wedding.AnswerIsMarried;
 import ru.konry.stud_fin_assistent.mail.*;
@@ -28,7 +29,7 @@ public class StudentRequestHandler {
 
     public LinkedList<StudentRequest> readStudentRequests() {
         LinkedList<StudentRequest> stRequestsList = new LinkedList<StudentRequest>();
-        for(int c = 0; c < 3; c++) {
+        for(int c = 0; c < 4; c++) {
             StudentRequest newRequest = RequestRegistration.createStudentRequest(c);
             stRequestsList.add(newRequest);
         }

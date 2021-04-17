@@ -5,10 +5,14 @@ import ru.konry.stud_fin_assistent.domains.registry.AnswerCityRegistryItem;
 import ru.konry.stud_fin_assistent.exceptions.CityRegisterException;
 import ru.konry.stud_fin_assistent.domains.registry.AnswerCityRegistry;
 import ru.konry.stud_fin_assistent.domains.registry.CityRegisterResponse;
+import ru.konry.stud_fin_assistent.exceptions.TransportException;
 
 import java.util.List;
 
-public class CityRegistryValidator {
+public class CityRegistryValidator
+{
+    public static final String IN_CODE = "NO_GRN";
+
     public String hostName;
     public String login;
     private String password = "1234";
@@ -32,11 +36,25 @@ public class CityRegistryValidator {
     }
 
     private AnswerCityRegistryItem checkPerson(Person person) {
+        AnswerCityRegistryItem.CityStatus status = null;
+        AnswerCityRegistryItem.CityError error = null;
         try {
-            CityRegisterResponse ans = personChecker.checkPerson(person);
-        } catch (CityRegisterException e) {
-            e.printStackTrace(System.out);
+            CityRegisterResponse tmp = personChecker.checkPerson(person);
+            status = tmp.isExisting() ?
+                    AnswerCityRegistryItem.CityStatus.YES :
+                    AnswerCityRegistryItem.CityStatus.NO;
         }
-        return null;
+        catch (CityRegisterException e) {
+            e.printStackTrace(System.out);
+            status = AnswerCityRegistryItem.CityStatus.ERROR;
+            error = new AnswerCityRegistryItem.CityError(e.getCode(), e.getMessage());
+        }
+        catch (TransportException e) {
+            e.printStackTrace(System.out);
+            status = AnswerCityRegistryItem.CityStatus.ERROR;
+            error = new AnswerCityRegistryItem.CityError(IN_CODE, e.getMessage());
+        }
+        AnswerCityRegistryItem ans = new AnswerCityRegistryItem(status, person, error);
+        return ans;
     }
 }
