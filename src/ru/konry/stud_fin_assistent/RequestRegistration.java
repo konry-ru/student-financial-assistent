@@ -2,6 +2,7 @@ package ru.konry.stud_fin_assistent;
 
 import ru.konry.stud_fin_assistent.domains.*;
 
+import java.sql.*;
 import java.time.LocalDate;
 
 public class RequestRegistration {
@@ -55,7 +56,19 @@ public class RequestRegistration {
         return  sr;
     }
 
-    public static void main(String[] args) {
-        StudentRequest sr = createStudentRequest(42);
+    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+
+        Class.forName("org.postgresql.Driver");
+        Connection con = DriverManager.getConnection(
+                "jdbc:postgresql://localhost:5432/fin_students", "postgres", "postgres"
+        );
+        Statement stmnt = con.createStatement();
+        ResultSet rs = stmnt.executeQuery("SELECT * FROM st_street");
+        while (rs.next()) {
+            System.out.println(rs.getLong(1) + " : " + rs.getString(2));
+        }
+
+
+//        StudentRequest sr = createStudentRequest(42);
     }
 }
