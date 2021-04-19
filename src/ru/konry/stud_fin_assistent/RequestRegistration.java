@@ -58,7 +58,7 @@ public class RequestRegistration {
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
 
-        Class.forName("org.postgresql.Driver");
+//        Class.forName("org.postgresql.Driver");
         Connection con = DriverManager.getConnection(
                 "jdbc:postgresql://localhost:5432/fin_students", "postgres", "postgres"
         );
