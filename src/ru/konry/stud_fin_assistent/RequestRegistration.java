@@ -56,17 +56,9 @@ public class RequestRegistration {
         return  sr;
     }
 
-    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+    public static void main(String[] args) {
 
-//        Class.forName("org.postgresql.Driver");
-        Connection con = DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/fin_students", "postgres", "postgres"
-        );
-        Statement stmnt = con.createStatement();
-        ResultSet rs = stmnt.executeQuery("SELECT * FROM st_street");
-        while (rs.next()) {
-            System.out.println(rs.getLong(1) + " : " + rs.getString(2));
-        }
+
 
 
 //        StudentRequest sr = createStudentRequest(42);
