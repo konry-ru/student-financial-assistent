@@ -9,6 +9,9 @@ import java.util.List;
 
 public class DictionaryDaoImpl implements DictionaryDao
 {
+    public static final String GET_STREET = "SELECT street_code, street_name FROM st_street WHERE " +
+            "UPPER(street_name) LIKE UPPER(?)";
+
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(
                 "jdbc:postgresql://localhost:5432/fin_students", "postgres", "postgres"
@@ -18,14 +21,13 @@ public class DictionaryDaoImpl implements DictionaryDao
     public List<Street> findStreets(String pattern) throws DaoException {
 
         List<Street> streets = new LinkedList<>();
-        final String query = "SELECT street_code, street_name FROM st_street WHERE " +
-                "UPPER(street_name) LIKE UPPER('%" + pattern + "%')";
 
         try (Connection con = getConnection();
-             Statement stmt = con.createStatement();
+             PreparedStatement stmt = con.prepareStatement(GET_STREET);
         ) {
 
-            ResultSet rs = stmt.executeQuery(query);
+            stmt.setString(1, "%" + pattern + "%");
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 Street street = new Street(rs.getLong(1), rs.getString(2));
@@ -39,7 +41,7 @@ public class DictionaryDaoImpl implements DictionaryDao
     return streets;
     }
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException, DaoException {
+    public static void main(String[] args) throws  DaoException {
         List<Street> streets;
         DictionaryDaoImpl dd = new DictionaryDaoImpl();
         streets = dd.findStreets("sec");
