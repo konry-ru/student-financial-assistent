@@ -10,10 +10,9 @@ import java.util.List;
 public class DictionaryDaoImpl implements DictionaryDao
 {
     private Connection getConnection() throws SQLException {
-        Connection con = DriverManager.getConnection(
+        return DriverManager.getConnection(
                 "jdbc:postgresql://localhost:5432/fin_students", "postgres", "postgres"
         );
-        return con;
     }
 
     public List<Street> findStreets(String pattern) throws DaoException {
@@ -22,23 +21,15 @@ public class DictionaryDaoImpl implements DictionaryDao
         final String query = "SELECT street_code, street_name FROM st_street WHERE " +
                 "UPPER(street_name) LIKE UPPER('%" + pattern + "%')";
 
-        try {
+        try (Connection con = getConnection();
+             Statement stmt = con.createStatement();
+        ) {
 
-            Connection con = getConnection();
+            ResultSet rs = stmt.executeQuery(query);
 
-            try {
-                Statement stmnt = con.createStatement();
-
-                ResultSet rs = stmnt.executeQuery(query);
-
-                while (rs.next()) {
-                    Street street = new Street(rs.getLong(1), rs.getString(2));
-                    streets.add(street);
-                }
-            }
-            finally {
-                System.out.println("Соединение закрыто");
-                con.close();
+            while (rs.next()) {
+                Street street = new Street(rs.getLong(1), rs.getString(2));
+                streets.add(street);
             }
         }
         catch (SQLException ex) {
