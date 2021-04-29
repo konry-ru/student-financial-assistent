@@ -1,5 +1,6 @@
 package ru.konry.stud_fin_assistent.dao;
 
+import ru.konry.stud_fin_assistent.config.Config;
 import ru.konry.stud_fin_assistent.domains.Street;
 import ru.konry.stud_fin_assistent.exceptions.DaoException;
 
@@ -14,8 +15,9 @@ public class DictionaryDaoImpl implements DictionaryDao
 
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/fin_students", "postgres", "postgres"
-        );
+                Config.getProperty(Config.DB_URL),
+                Config.getProperty(Config.DB_LOGIN),
+                Config.getProperty(Config.DB_PASSWORD));
     }
 
     public List<Street> findStreets(String pattern) throws DaoException {
@@ -23,7 +25,7 @@ public class DictionaryDaoImpl implements DictionaryDao
         List<Street> streets = new LinkedList<>();
 
         try (Connection con = getConnection();
-             PreparedStatement stmt = con.prepareStatement(GET_STREET);
+             PreparedStatement stmt = con.prepareStatement(GET_STREET)
         ) {
 
             stmt.setString(1, "%" + pattern + "%");
@@ -44,8 +46,11 @@ public class DictionaryDaoImpl implements DictionaryDao
     public static void main(String[] args) throws  DaoException {
         List<Street> streets;
         DictionaryDaoImpl dd = new DictionaryDaoImpl();
-        streets = dd.findStreets("sec");
-        System.out.println(streets);
+        streets = dd.findStreets("d");
+        for (Street street :
+                streets) {
+            System.out.println(street.getStreetName());
+        }
     }
 }
 
