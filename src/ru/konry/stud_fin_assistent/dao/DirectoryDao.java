@@ -8,6 +8,11 @@ import java.util.List;
 
 public class DirectoryDao
 {
+    private Connection getConnectionc() throws SQLException {
+        return DriverManager.getConnection(
+                "jdbc:postgresql://localhost:5432/fin_students", "postgres", "postgres"
+        );
+    }
 
     public List<Street> findStreets(String pattern) throws ClassNotFoundException, SQLException {
 
@@ -16,9 +21,7 @@ public class DirectoryDao
                 "UPPER(street_name) LIKE UPPER('%" + pattern + "%')";
 
         Class.forName("org.postgresql.Driver");
-        Connection con = DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/fin_students", "postgres", "postgres"
-        );
+        Connection con = getConnectionc();
         Statement stmnt = con.createStatement();
         ResultSet rs = stmnt.executeQuery(query);
         while (rs.next()) {
