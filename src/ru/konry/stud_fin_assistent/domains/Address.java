@@ -2,7 +2,7 @@ package ru.konry.stud_fin_assistent.domains;
 
 public class Address {
     private String postalCode;
-    private String street;
+    private Street street;
     private String building;
     private String corpus;
     private String apartment;
@@ -11,7 +11,7 @@ public class Address {
 
     }
 
-    public Address(String postalCode, String street, String building, String corpus, String apartment) {
+    public Address(String postalCode, Street street, String building, String corpus, String apartment) {
         this.postalCode = postalCode;
         this.street = street;
         this.building = building;
@@ -27,11 +27,11 @@ public class Address {
         this.postalCode = postalCode;
     }
 
-    public String getStreet() {
+    public Street getStreet() {
         return street;
     }
 
-    public void setStreet(String street) {
+    public void setStreet(Street street) {
         this.street = street;
     }
 
