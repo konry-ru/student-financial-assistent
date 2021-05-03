@@ -38,6 +38,8 @@ CREATE TABLE st_register_office(
 
 CREATE TABLE st_student_request (
     student_request_id SERIAL,
+    student_request_time timestamp not null,
+    student_request_state int not null,
     h_name varchar(100) not null,
     h_surname varchar(100) not null,
     h_patronymic varchar(100) not null,

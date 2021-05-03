@@ -115,6 +115,8 @@ public class DictionaryDaoImpl implements DictionaryDao
         return areas;
     }
 
+    //    TODO create one method for all Connections
+
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(
                 Config.getProperty(Config.DB_URL),
