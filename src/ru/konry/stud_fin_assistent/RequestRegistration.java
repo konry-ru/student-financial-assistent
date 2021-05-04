@@ -1,15 +1,20 @@
 package ru.konry.stud_fin_assistent;
 
+import ru.konry.stud_fin_assistent.dao.StudentRequestDaoImpl;
 import ru.konry.stud_fin_assistent.domains.*;
+import ru.konry.stud_fin_assistent.exceptions.DaoException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class RequestRegistration {
 
     static StudentRequest createStudentRequest(long id) {
         StudentRequest sr = new StudentRequest();
         sr.setStudentRequestId(id);
+        sr.setTimeOfRequest(LocalDateTime.of(2021, 4, 26, 13, 30));
         sr.setMarriageCertificateId("" + (12345600 + id));
+        sr.setStateOfRequest(StateOfRequest.START);
         sr.setMarriageDate(LocalDate.of(2020, 7, 5));
         RegisterOffice marriageOffice = new RegisterOffice(1, "", "");
         sr.setMarriageOffice(marriageOffice);
@@ -58,5 +63,14 @@ public class RequestRegistration {
         sr.addChild(child2);
 
         return  sr;
+    }
+
+    public static void main(String[] args) {
+        StudentRequest studentRequest = createStudentRequest(1);
+        try {
+            long requestId = new StudentRequestDaoImpl().saveStudentRequest(studentRequest);
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
     }
 }
