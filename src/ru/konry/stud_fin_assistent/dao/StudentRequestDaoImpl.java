@@ -29,42 +29,17 @@ public class StudentRequestDaoImpl implements StudentRequestDao
         try (Connection con = createConnection();
             PreparedStatement stmt = con.prepareStatement(STUDENT_REQUEST, new String[]{"student_request_id"})) {
 
+//          Request Data
             stmt.setTimestamp(1, java.sql.Timestamp.valueOf(LocalDateTime.now()));
             stmt.setInt(2, StudentRequestStatus.START.ordinal());
 
+//          Husband and wife
             Adult husband = sr.getHusband();
-            Address husbandAddress = husband.getAdress();
-
-            stmt.setString(3, husband.getName());
-            stmt.setString(4, husband.getSurname());
-            stmt.setString(5, husband.getPatronymic());
-            stmt.setDate(6, java.sql.Date.valueOf(husband.getBirthData()));
-            stmt.setString(7, husband.getPassportSeries());
-            stmt.setString(8, husband.getPassportNumber());
-            stmt.setDate(9, java.sql.Date.valueOf(husband.getIssueData()));
-            stmt.setLong(10, husband.getIssueDepartment().getOfficeId());
-            stmt.setString(11, husbandAddress.getPostalCode());
-            stmt.setLong(12, husbandAddress.getStreet().getStreetCode());
-            stmt.setString(13, husbandAddress.getBuilding());
-            stmt.setString(14, husbandAddress.getCorpus());
-            stmt.setString(15, husbandAddress.getApartment());
-
             Adult wife = sr.getWife();
-            Address wifeAddress = wife.getAdress();
-            stmt.setString(16, wife.getName());
-            stmt.setString(17, wife.getSurname());
-            stmt.setString(18, wife.getPatronymic());
-            stmt.setDate(19, java.sql.Date.valueOf(wife.getBirthData()));
-            stmt.setString(20, wife.getPassportSeries());
-            stmt.setString(21, wife.getPassportNumber());
-            stmt.setDate(22, java.sql.Date.valueOf(wife.getIssueData()));
-            stmt.setLong(23, wife.getIssueDepartment().getOfficeId());
-            stmt.setString(24, wifeAddress.getPostalCode());
-            stmt.setLong(25, wifeAddress.getStreet().getStreetCode());
-            stmt.setString(26, wifeAddress.getBuilding());
-            stmt.setString(27, wifeAddress.getCorpus());
-            stmt.setString(28, wifeAddress.getApartment());
+            setAdultParameters(stmt, husband, 3);
+            setAdultParameters(stmt, wife, 16);
 
+//          Marriage
             stmt.setString(29, sr.getMarriageCertificateId());
             stmt.setLong(30, sr.getMarriageOffice().getOfficeId());
             stmt.setDate(31, java.sql.Date.valueOf(sr.getMarriageDate()));
@@ -81,6 +56,23 @@ public class StudentRequestDaoImpl implements StudentRequestDao
             throw new DaoException(ex);
         }
         return result;
+    }
+
+    private void setAdultParameters (PreparedStatement stmt, Adult adult, int start) throws SQLException {
+        stmt.setString(start, adult.getName());
+        stmt.setString(start + 1, adult.getSurname());
+        stmt.setString(start + 2, adult.getPatronymic());
+        stmt.setDate(start + 3, Date.valueOf(adult.getBirthData()));
+        stmt.setString(start + 4, adult.getPassportSeries());
+        stmt.setString(start + 5, adult.getPassportNumber());
+        stmt.setDate(start + 6, Date.valueOf(adult.getIssueData()));
+        stmt.setLong(start + 7, adult.getIssueDepartment().getOfficeId());
+        Address husbandAddress = adult.getAdress();
+        stmt.setString(start + 8, husbandAddress.getPostalCode());
+        stmt.setLong(start + 9, husbandAddress.getStreet().getStreetCode());
+        stmt.setString(start + 10, husbandAddress.getBuilding());
+        stmt.setString(start + 11, husbandAddress.getCorpus());
+        stmt.setString(start + 12, husbandAddress.getApartment());
     }
 
 //    TODO create one method for all Connections
