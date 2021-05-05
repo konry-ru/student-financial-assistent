@@ -8,7 +8,7 @@ public class StudentRequest {
 
     private long studentRequestId;
     private LocalDateTime timeOfRequest;
-    private StateOfRequest stateOfRequest;
+    private StudentRequestStatus studentRequestStatus;
     private Adult husband;
     private Adult wife;
     private ArrayList<Child> children;
@@ -33,12 +33,12 @@ public class StudentRequest {
         this.timeOfRequest = timeOfRequest;
     }
 
-    public StateOfRequest getStateOfRequest() {
-        return stateOfRequest;
+    public StudentRequestStatus getStateOfRequest() {
+        return studentRequestStatus;
     }
 
-    public void setStateOfRequest(StateOfRequest stateOfRequest) {
-        this.stateOfRequest = stateOfRequest;
+    public void setStateOfRequest(StudentRequestStatus studentRequestStatus) {
+        this.studentRequestStatus = studentRequestStatus;
     }
 
     public Adult getHusband() {
