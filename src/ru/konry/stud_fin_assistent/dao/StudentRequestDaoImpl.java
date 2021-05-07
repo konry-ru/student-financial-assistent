@@ -33,29 +33,39 @@ public class StudentRequestDaoImpl implements StudentRequestDao
         try (Connection con = createConnection();
             PreparedStatement stmt = con.prepareStatement(STUDENT_REQUEST, new String[]{"student_request_id"})) {
 
+            con.setAutoCommit(false);
+
+            try {
 //          Request Data
-            stmt.setTimestamp(1, java.sql.Timestamp.valueOf(LocalDateTime.now()));
-            stmt.setInt(2, StudentRequestStatus.START.ordinal());
+                stmt.setTimestamp(1, java.sql.Timestamp.valueOf(LocalDateTime.now()));
+                stmt.setInt(2, StudentRequestStatus.START.ordinal());
 
 //          Husband and wife
-            Adult husband = sr.getHusband();
-            Adult wife = sr.getWife();
-            setAdultParameters(stmt, husband, 3);
-            setAdultParameters(stmt, wife, 16);
+                Adult husband = sr.getHusband();
+                Adult wife = sr.getWife();
+                setAdultParameters(stmt, husband, 3);
+                setAdultParameters(stmt, wife, 16);
 
 //          Marriage
-            stmt.setString(29, sr.getMarriageCertificateId());
-            stmt.setLong(30, sr.getMarriageOffice().getOfficeId());
-            stmt.setDate(31, java.sql.Date.valueOf(sr.getMarriageDate()));
+                stmt.setString(29, sr.getMarriageCertificateId());
+                stmt.setLong(30, sr.getMarriageOffice().getOfficeId());
+                stmt.setDate(31, java.sql.Date.valueOf(sr.getMarriageDate()));
 
-            stmt.executeUpdate();
+                stmt.executeUpdate();
 
-            ResultSet keys = stmt.getGeneratedKeys();
-            if (keys.next()) {
-                requestId = keys.getLong("student_request_id");
+                ResultSet keys = stmt.getGeneratedKeys();
+                if (keys.next()) {
+                    requestId = keys.getLong("student_request_id");
+                }
+                keys.close();
+
+                saveChildren(con, sr, requestId);
+
+                con.commit();
+            } catch (SQLException ex) {
+                con.rollback();
+                throw ex;
             }
-            keys.close();
-            saveChildren(con, sr, requestId);
         }
         catch (SQLException ex) {
             throw new DaoException(ex);
