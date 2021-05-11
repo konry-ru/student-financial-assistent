@@ -12,12 +12,16 @@ public class StudentRequestDaoImpl implements StudentRequestDao
     private static final String STUDENT_REQUEST = "INSERT INTO st_student_request(" +
             "student_request_time, student_request_state," +
             " h_name, h_surname, h_patronymic, h_birth_data, h_passport_series, h_passport_number, h_passport_date," +
-            " h_passport_office_id, h_postal_code, h_street_code, h_building, h_corpus, h_apartment," +
+            " h_passport_office_id, h_postal_code, h_street_code, h_building, h_corpus, h_apartment, h_university_id, h_student_id, " +
             " w_name, w_surname, w_patronymic, w_birth_data, w_passport_series, w_passport_number, w_passport_date," +
-            " w_passport_office_id, w_postal_code, w_street_code, w_building, w_corpus, w_apartment," +
+            " w_passport_office_id, w_postal_code, w_street_code, w_building, w_corpus, w_apartment, w_university_id, w_student_id, " +
             " certificate_id, register_office_id, marriage_data)" +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?," +
-            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            "VALUES (?, ?, " +
+            "?, ?, ?, ?, ?, ?, ?, " +
+            "?, ?, ?, ?, ?, ?, ?, ?, " +
+            "?, ?, ?, ?, ?, ?, ?, " +
+            "?, ?, ?, ?, ?, ?, ?, ?, " +
+            "?, ?, ?);";
 
     private static final String CHILD_REQUEST = "INSERT INTO st_child(" +
             "student_request_id, c_name, c_surname, c_patronymic, c_birth_data," +
@@ -44,12 +48,12 @@ public class StudentRequestDaoImpl implements StudentRequestDao
                 Adult husband = sr.getHusband();
                 Adult wife = sr.getWife();
                 setAdultParameters(stmt, husband, 3);
-                setAdultParameters(stmt, wife, 16);
+                setAdultParameters(stmt, wife, 18);
 
 //          Marriage
-                stmt.setString(29, sr.getMarriageCertificateId());
-                stmt.setLong(30, sr.getMarriageOffice().getOfficeId());
-                stmt.setDate(31, java.sql.Date.valueOf(sr.getMarriageDate()));
+                stmt.setString(33, sr.getMarriageCertificateId());
+                stmt.setLong(34, sr.getMarriageOffice().getOfficeId());
+                stmt.setDate(35, java.sql.Date.valueOf(sr.getMarriageDate()));
 
                 stmt.executeUpdate();
 
@@ -98,6 +102,8 @@ public class StudentRequestDaoImpl implements StudentRequestDao
         stmt.setLong(start + 7, adult.getIssueDepartment().getOfficeId());
         Address address = adult.getAdress();
         setAddressParameters(stmt, address, start + 8);
+        stmt.setLong(start + 13, adult.getUniversity().getUniversityId());
+        stmt.setString(start + 14, adult.getStudentId());
     }
 
     private void setChildParameters(PreparedStatement stmt, Child child, int start) throws SQLException {

@@ -25,8 +25,8 @@ public class RequestRegistration {
         husband.setPassportSeries("" + (1000 + id));
         husband.setPassportNumber("" + (100000 + id));
         husband.setIssueData(LocalDate.of(2016, 3, 12));
-        PassportOffice po1 = new PassportOffice(1, "", "");
-        husband.setIssueDepartment(po1);
+        husband.setIssueDepartment(new PassportOffice(1, "", ""));
+        husband.setUniversity(new University(2L, ""));
         husband.setStudentId("" + (1000 + id));
         husband.setAdress(address);
 
@@ -37,6 +37,7 @@ public class RequestRegistration {
         wife.setIssueData(LocalDate.of(2017, 4, 24));
         PassportOffice po2 = new PassportOffice(2, "", "");
         wife.setIssueDepartment(po2);
+        wife.setUniversity(new University(1L, ""));
         wife.setStudentId("" + (2000 + id));
         wife.setAdress(address);
 

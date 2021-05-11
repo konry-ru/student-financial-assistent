@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS st_student_request;
 DROP TABLE IF EXISTS st_passport_office;
 DROP TABLE IF EXISTS st_register_office;
 DROP TABLE IF EXISTS st_country_struct;
+DROP TABLE IF EXISTS st_university;
 DROP TABLE IF EXISTS st_street;
 
 
@@ -10,6 +11,12 @@ CREATE TABLE st_street (
 	street_code integer,
 	street_name varchar(300),
 	PRIMARY KEY(street_code)
+);
+
+CREATE TABLE st_university (
+	university_id integer,
+	university_name varchar(300),
+	PRIMARY KEY(university_id)
 );
 
 CREATE TABLE st_country_struct(
@@ -53,6 +60,8 @@ CREATE TABLE st_student_request (
     h_building varchar(10) not null,
     h_corpus varchar(10),
     h_apartment varchar(10),
+    h_university_id integer not null,
+    h_student_id varchar(30),
     w_name varchar(100) not null,
     w_surname varchar(100) not null,
     w_patronymic varchar(100) not null,
@@ -66,13 +75,17 @@ CREATE TABLE st_student_request (
     w_building varchar(10) not null,
     w_corpus varchar(10),
     w_apartment varchar(10),
+    w_university_id integer not null,
+    w_student_id varchar(30),
     certificate_id varchar(20) not null,
     register_office_id integer not null,
     marriage_data date not null,
     PRIMARY KEY(student_request_id),
     FOREIGN KEY(h_street_code) REFERENCES st_street(street_code) ON DELETE RESTRICT,
+    FOREIGN KEY(h_university_id) REFERENCES st_university(university_id) ON DELETE RESTRICT,
     FOREIGN KEY(h_passport_office_id) REFERENCES st_passport_office(p_office_id) ON DELETE RESTRICT,
     FOREIGN KEY(w_street_code) REFERENCES st_street(street_code) ON DELETE RESTRICT,
+    FOREIGN KEY(w_university_id) REFERENCES st_university(university_id) ON DELETE RESTRICT,
     FOREIGN KEY(w_passport_office_id) REFERENCES st_passport_office(p_office_id) ON DELETE RESTRICT,
     FOREIGN KEY(register_office_id) REFERENCES st_register_office(r_office_id) ON DELETE RESTRICT
 );

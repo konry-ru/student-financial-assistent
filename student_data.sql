@@ -5,6 +5,11 @@ INSERT INTO st_street (street_code, street_name) VALUES
 (4, 'улица Гороховая'),
 (5, 'проспект Ветеранов');
 
+INSERT INTO st_university (university_id, university_name) VALUES
+(1, 'Санкт-Петербургский Государственный Университет'),
+(2, 'Санкт-Петербургский Политихнический Университет'),
+(3, 'Санкт-Петербуркский Морской Технический Университет');
+
 INSERT INTO st_country_struct (area_id, area_name) VALUES
 ('010000000000', 'Город'),
 ('010010000000', 'Город Район 1'),
