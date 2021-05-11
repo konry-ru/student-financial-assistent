@@ -75,11 +75,18 @@ public class StudentRequestDaoImpl implements StudentRequestDao
 
     private void saveChildren(Connection con, StudentRequest sr, long requestId) throws SQLException {
         try(PreparedStatement stmt = con.prepareStatement(CHILD_REQUEST)){
+            int counter = 0;
             for (Child child : sr.getChildren()) {
                 stmt.setLong(1, requestId);
                 setChildParameters(stmt, child, 2);
-                stmt.executeUpdate();
+                stmt.addBatch();
+                counter++;
+                if(counter > 10000) {
+                    stmt.executeBatch();
+                    counter = 0;
+                }
             }
+            stmt.executeBatch();
         }
     }
 
