@@ -1,11 +1,13 @@
 package ru.konry.stud_fin_assistent;
 
+import ru.konry.stud_fin_assistent.dao.StudentRequestDao;
 import ru.konry.stud_fin_assistent.dao.StudentRequestDaoImpl;
 import ru.konry.stud_fin_assistent.domains.*;
 import ru.konry.stud_fin_assistent.exceptions.DaoException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class RequestRegistration {
 
@@ -68,9 +70,19 @@ public class RequestRegistration {
     public static void main(String[] args) {
         StudentRequest studentRequest = createStudentRequest(10);
         try {
-            long requestId = new StudentRequestDaoImpl().saveStudentRequest(studentRequest);
-            studentRequest.setStudentRequestId(requestId);
-            System.out.println(studentRequest.getStudentRequestId());
+            StudentRequestDao sDao = new StudentRequestDaoImpl();
+            long requestId = sDao.saveStudentRequest(studentRequest);
+            List<StudentRequest> studentRequests = sDao.getStudentRequests();
+
+            System.out.println("Id of the last request: " + requestId);
+            System.out.println("=====================");
+
+            System.out.println("Последовательное получение заявок.");
+            for (StudentRequest sr :
+                    studentRequests) {
+                System.out.println(sr.getStudentRequestId() + " от " + sr.getTimeOfRequest());
+            }
+
         } catch (DaoException e) {
             e.printStackTrace();
         }

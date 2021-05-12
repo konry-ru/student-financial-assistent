@@ -6,6 +6,9 @@ import ru.konry.stud_fin_assistent.exceptions.DaoException;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class StudentRequestDaoImpl implements StudentRequestDao
 {
@@ -28,6 +31,9 @@ public class StudentRequestDaoImpl implements StudentRequestDao
             "c_certificate_number, c_certificate_date, c_register_office_id," +
             "c_postal_code, c_street_code, c_building, c_corpus, c_apartment)" +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+
+    public static final String SELECT_REQUEST = "SELECT * FROM st_student_request " +
+            "WHERE student_request_state = 0 ORDER BY student_request_time;";
 
     @Override
     public long saveStudentRequest(StudentRequest sr) throws DaoException {
@@ -75,6 +81,32 @@ public class StudentRequestDaoImpl implements StudentRequestDao
             throw new DaoException(ex);
         }
         return requestId;
+    }
+
+    @Override
+    public List<StudentRequest> getStudentRequests() throws DaoException {
+
+        List<StudentRequest> result = new LinkedList<>();
+
+        try (Connection con = createConnection();
+             PreparedStatement stmt = con.prepareStatement(SELECT_REQUEST)) {
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                StudentRequest sRequest = new StudentRequest();
+
+                setRequestHeader(sRequest, rs);
+                setWedding(sRequest, rs);
+
+                result.add(sRequest);
+            }
+
+            rs.close();
+        } catch (SQLException ex) {
+            throw new DaoException(ex);
+        }
+        return result;
     }
 
     private void saveChildren(Connection con, StudentRequest sr, long requestId) throws SQLException {
@@ -127,6 +159,21 @@ public class StudentRequestDaoImpl implements StudentRequestDao
         stmt.setString(start + 2, address.getBuilding());
         stmt.setString(start + 3, address.getCorpus());
         stmt.setString(start + 4, address.getApartment());
+    }
+
+    private void setRequestHeader(StudentRequest sRequest, ResultSet rs) throws SQLException {
+
+        sRequest.setStudentRequestId(rs.getLong("student_request_id"));
+        sRequest.setStateOfRequest(StudentRequestStatus.statusFromValue(rs.getInt("student_request_state")));
+        sRequest.setTimeOfRequest(rs.getTimestamp("student_request_time").toLocalDateTime());
+    }
+
+    private void setWedding(StudentRequest sRequest, ResultSet rs) throws SQLException {
+
+        sRequest.setMarriageCertificateId(rs.getString("certificate_id"));
+        sRequest.setMarriageDate(rs.getDate("marriage_data").toLocalDate());
+        long rOfficeId = rs.getLong("register_office_id");
+        sRequest.setMarriageOffice(new RegisterOffice(rOfficeId, "", ""));
     }
 
 //    TODO create one method for all Connections
