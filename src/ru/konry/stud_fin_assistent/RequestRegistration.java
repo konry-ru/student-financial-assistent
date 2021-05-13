@@ -30,7 +30,7 @@ public class RequestRegistration {
         husband.setIssueDepartment(new PassportOffice(1, "", ""));
         husband.setUniversity(new University(2L, ""));
         husband.setStudentId("" + (1000 + id));
-        husband.setAdress(address);
+        husband.setAddress(address);
 
         //Жена
         Adult wife = new Adult("Елена", "Васильевна", "Корчагина", LocalDate.of(2001, 8, 3));
@@ -41,7 +41,7 @@ public class RequestRegistration {
         wife.setIssueDepartment(po2);
         wife.setUniversity(new University(1L, ""));
         wife.setStudentId("" + (2000 + id));
-        wife.setAdress(address);
+        wife.setAddress(address);
 
         //Ребенок 1
         Child child1 = new Child("Елизавета", "Константиновна", "Корчагина", LocalDate.of(2020, 1, 12));

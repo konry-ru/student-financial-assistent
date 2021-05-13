@@ -6,7 +6,6 @@ import ru.konry.stud_fin_assistent.exceptions.DaoException;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,9 +13,9 @@ public class StudentRequestDaoImpl implements StudentRequestDao
 {
     private static final String STUDENT_REQUEST = "INSERT INTO st_student_request(" +
             "student_request_time, student_request_state," +
-            " h_name, h_surname, h_patronymic, h_birth_data, h_passport_series, h_passport_number, h_passport_date," +
+            " h_sur_name, h_given_name, h_patronymic, h_birth_data, h_passport_series, h_passport_number, h_passport_date," +
             " h_passport_office_id, h_postal_code, h_street_code, h_building, h_corpus, h_apartment, h_university_id, h_student_id, " +
-            " w_name, w_surname, w_patronymic, w_birth_data, w_passport_series, w_passport_number, w_passport_date," +
+            " w_sur_name, w_given_name, w_patronymic, w_birth_data, w_passport_series, w_passport_number, w_passport_date," +
             " w_passport_office_id, w_postal_code, w_street_code, w_building, w_corpus, w_apartment, w_university_id, w_student_id, " +
             " certificate_id, register_office_id, marriage_data)" +
             "VALUES (?, ?, " +
@@ -27,10 +26,14 @@ public class StudentRequestDaoImpl implements StudentRequestDao
             "?, ?, ?);";
 
     private static final String CHILD_REQUEST = "INSERT INTO st_child(" +
-            "student_request_id, c_name, c_surname, c_patronymic, c_birth_data," +
+            "student_request_id, c_sur_name, c_given_name, c_patronymic, c_birth_data," +
             "c_certificate_number, c_certificate_date, c_register_office_id," +
             "c_postal_code, c_street_code, c_building, c_corpus, c_apartment)" +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            "VALUES (" +
+            "?, ?, ?, ?, ?, " +
+            "?, ?, ?, " +
+            "?, ?, ?, ?, ?" +
+            ");";
 
     public static final String SELECT_REQUEST = "SELECT * FROM st_student_request " +
             "WHERE student_request_state = 0 ORDER BY student_request_time;";
@@ -96,8 +99,12 @@ public class StudentRequestDaoImpl implements StudentRequestDao
             while (rs.next()) {
                 StudentRequest sRequest = new StudentRequest();
 
-                setRequestHeader(sRequest, rs);
-                setWedding(sRequest, rs);
+                fillRequestHeader(sRequest, rs);
+                fillWedding(sRequest, rs);
+                Adult husband = fillAdult(rs, "h_");
+                Adult wife = fillAdult(rs, "w_");
+                sRequest.setHusband(husband);
+                sRequest.setWife(wife);
 
                 result.add(sRequest);
             }
@@ -132,7 +139,7 @@ public class StudentRequestDaoImpl implements StudentRequestDao
         stmt.setString(start + 5, adult.getPassportNumber());
         stmt.setDate(start + 6, Date.valueOf(adult.getIssueData()));
         stmt.setLong(start + 7, adult.getIssueDepartment().getOfficeId());
-        Address address = adult.getAdress();
+        Address address = adult.getAddress();
         setAddressParameters(stmt, address, start + 8);
         stmt.setLong(start + 13, adult.getUniversity().getUniversityId());
         stmt.setString(start + 14, adult.getStudentId());
@@ -147,8 +154,8 @@ public class StudentRequestDaoImpl implements StudentRequestDao
     }
 
     private void setPersonParameters(PreparedStatement stmt, Person person, int start) throws SQLException {
-        stmt.setString(start, person.getName());
-        stmt.setString(start + 1, person.getSurname());
+        stmt.setString(start, person.getSurName());
+        stmt.setString(start + 1, person.getGivenName());
         stmt.setString(start + 2, person.getPatronymic());
         stmt.setDate(start + 3, Date.valueOf(person.getBirthData()));
     }
@@ -161,19 +168,50 @@ public class StudentRequestDaoImpl implements StudentRequestDao
         stmt.setString(start + 4, address.getApartment());
     }
 
-    private void setRequestHeader(StudentRequest sRequest, ResultSet rs) throws SQLException {
+    private void fillRequestHeader(StudentRequest sRequest, ResultSet rs) throws SQLException {
 
         sRequest.setStudentRequestId(rs.getLong("student_request_id"));
         sRequest.setStateOfRequest(StudentRequestStatus.statusFromValue(rs.getInt("student_request_state")));
         sRequest.setTimeOfRequest(rs.getTimestamp("student_request_time").toLocalDateTime());
     }
 
-    private void setWedding(StudentRequest sRequest, ResultSet rs) throws SQLException {
+    private void fillWedding(StudentRequest sRequest, ResultSet rs) throws SQLException {
 
         sRequest.setMarriageCertificateId(rs.getString("certificate_id"));
         sRequest.setMarriageDate(rs.getDate("marriage_data").toLocalDate());
         long rOfficeId = rs.getLong("register_office_id");
         sRequest.setMarriageOffice(new RegisterOffice(rOfficeId, "", ""));
+    }
+
+    private Adult fillAdult(ResultSet rs, String pref) throws SQLException {
+        Adult adult = new Adult();
+
+        adult.setSurName(rs.getString(pref + "sur_name"));
+        adult.setGivenName(rs.getString(pref + "given_name"));
+        adult.setPatronymic(rs.getString(pref + "patronymic"));
+        adult.setBirthData(rs.getDate(pref + "birth_data").toLocalDate());
+
+        adult.setPassportSeries(rs.getString(pref + "passport_series"));
+        adult.setPassportNumber(rs.getString(pref + "passport_number"));
+        adult.setIssueData(rs.getDate(pref + "passport_date").toLocalDate());
+        PassportOffice po = new PassportOffice(rs.getLong(pref + "passport_office_id"), "", "");
+        adult.setIssueDepartment(po);
+
+        Address address = new Address();
+        address.setPostalCode(rs.getString(pref + "postal_code"));
+        Street street = new Street(rs.getLong(pref + "street_code"), "");
+        address.setStreet(street);
+        address.setBuilding(rs.getString(pref + "building"));
+        address.setCorpus(rs.getString(pref + "corpus"));
+        address.setApartment(rs.getString(pref + "apartment"));
+        adult.setAddress(address);
+
+        University uni = new University(rs.getLong(pref + "university_id"), "");
+        adult.setUniversity(uni);
+
+        adult.setStudentId(pref + "student_id");
+
+        return adult;
     }
 
 //    TODO create one method for all Connections

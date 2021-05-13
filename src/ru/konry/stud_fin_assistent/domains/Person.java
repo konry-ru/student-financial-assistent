@@ -4,37 +4,37 @@ import java.time.LocalDate;
 
 public abstract class Person {
 
-    protected String name;
-    protected String surname;
+    protected String surName;
+    protected String givenName;
     protected String patronymic;
-    private Address adress = new Address();
+    private Address address;
     private LocalDate birthData;
 
     public Person() {
 
     }
 
-    public Person(String name, String surname, String patronymic, LocalDate birthData) {
-        this.name = name;
-        this.surname = surname;
+    public Person(String surName, String givenName, String patronymic, LocalDate birthData) {
+        this.surName = surName;
+        this.givenName = givenName;
         this.patronymic = patronymic;
         this.birthData = birthData;
     }
 
-    public String getName() {
-        return name;
+    public String getSurName() {
+        return surName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSurName(String surName) {
+        this.surName = surName;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getGivenName() {
+        return givenName;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
     }
 
     public String getPatronymic() {
@@ -45,12 +45,12 @@ public abstract class Person {
         this.patronymic = patronymic;
     }
 
-    public Address getAdress() {
-        return adress;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setAdress(Address adress) {
-        this.adress = adress;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public LocalDate getBirthData() {
