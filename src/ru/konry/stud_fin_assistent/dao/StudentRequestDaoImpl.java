@@ -35,7 +35,9 @@ public class StudentRequestDaoImpl implements StudentRequestDao
             "?, ?, ?, ?, ?" +
             ");";
 
-    public static final String SELECT_REQUEST = "SELECT * FROM st_student_request " +
+    public static final String SELECT_REQUEST = "SELECT sr.*, ro.r_office_area_id, ro.r_office_name " +
+            "FROM st_student_request sr " +
+            "INNER JOIN st_register_office ro ON ro.r_office_id = sr.register_office_id " +
             "WHERE student_request_state = 0 ORDER BY student_request_time;";
 
     @Override
@@ -84,36 +86,6 @@ public class StudentRequestDaoImpl implements StudentRequestDao
             throw new DaoException(ex);
         }
         return requestId;
-    }
-
-    @Override
-    public List<StudentRequest> getStudentRequests() throws DaoException {
-
-        List<StudentRequest> result = new LinkedList<>();
-
-        try (Connection con = createConnection();
-             PreparedStatement stmt = con.prepareStatement(SELECT_REQUEST)) {
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                StudentRequest sRequest = new StudentRequest();
-
-                fillRequestHeader(sRequest, rs);
-                fillWedding(sRequest, rs);
-                Adult husband = fillAdult(rs, "h_");
-                Adult wife = fillAdult(rs, "w_");
-                sRequest.setHusband(husband);
-                sRequest.setWife(wife);
-
-                result.add(sRequest);
-            }
-
-            rs.close();
-        } catch (SQLException ex) {
-            throw new DaoException(ex);
-        }
-        return result;
     }
 
     private void saveChildren(Connection con, StudentRequest sr, long requestId) throws SQLException {
@@ -168,6 +140,36 @@ public class StudentRequestDaoImpl implements StudentRequestDao
         stmt.setString(start + 4, address.getApartment());
     }
 
+    @Override
+    public List<StudentRequest> getStudentRequests() throws DaoException {
+
+        List<StudentRequest> result = new LinkedList<>();
+
+        try (Connection con = createConnection();
+             PreparedStatement stmt = con.prepareStatement(SELECT_REQUEST)) {
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                StudentRequest sRequest = new StudentRequest();
+
+                fillRequestHeader(sRequest, rs);
+                fillWedding(sRequest, rs);
+                Adult husband = fillAdult(rs, "h_");
+                Adult wife = fillAdult(rs, "w_");
+                sRequest.setHusband(husband);
+                sRequest.setWife(wife);
+
+                result.add(sRequest);
+            }
+
+            rs.close();
+        } catch (SQLException ex) {
+            throw new DaoException(ex);
+        }
+        return result;
+    }
+
     private void fillRequestHeader(StudentRequest sRequest, ResultSet rs) throws SQLException {
 
         sRequest.setStudentRequestId(rs.getLong("student_request_id"));
@@ -179,8 +181,10 @@ public class StudentRequestDaoImpl implements StudentRequestDao
 
         sRequest.setMarriageCertificateId(rs.getString("certificate_id"));
         sRequest.setMarriageDate(rs.getDate("marriage_data").toLocalDate());
-        long rOfficeId = rs.getLong("register_office_id");
-        sRequest.setMarriageOffice(new RegisterOffice(rOfficeId, "", ""));
+        long officeId = rs.getLong("register_office_id");
+        String areaId = rs.getString("r_office_area_id");
+        String name = rs.getString("r_office_name");
+        sRequest.setMarriageOffice(new RegisterOffice(officeId, areaId, name));
     }
 
     private Adult fillAdult(ResultSet rs, String pref) throws SQLException {
