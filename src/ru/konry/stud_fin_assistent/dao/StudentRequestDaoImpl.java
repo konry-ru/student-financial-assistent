@@ -35,10 +35,14 @@ public class StudentRequestDaoImpl implements StudentRequestDao
             "?, ?, ?, ?, ?" +
             ");";
 
-    public static final String SELECT_REQUEST = "SELECT sr.*, ro.r_office_area_id, ro.r_office_name " +
-            "FROM st_student_request sr " +
-            "INNER JOIN st_register_office ro ON ro.r_office_id = sr.register_office_id " +
-            "WHERE student_request_state = 0 ORDER BY student_request_time;";
+    public static final String SELECT_REQUEST = "SELECT sr.*, ro.r_office_area_id, ro.r_office_name, " +
+        "p_h.p_office_area_id AS h_p_office_area_id, p_h.p_office_name AS h_p_office_name, " +
+        "p_w.p_office_area_id AS w_p_office_area_id, p_w.p_office_name AS w_p_office_name " +
+        "FROM st_student_request sr " +
+        "INNER JOIN st_register_office ro ON ro.r_office_id = sr.register_office_id " +
+        "INNER JOIN st_passport_office p_h ON p_h.p_office_id = sr.h_passport_office_id " +
+        "INNER JOIN st_passport_office p_w ON p_w.p_office_id = sr.w_passport_office_id " +
+        "WHERE student_request_state = 0 ORDER BY student_request_time;";
 
     @Override
     public long saveStudentRequest(StudentRequest sr) throws DaoException {
@@ -198,7 +202,11 @@ public class StudentRequestDaoImpl implements StudentRequestDao
         adult.setPassportSeries(rs.getString(pref + "passport_series"));
         adult.setPassportNumber(rs.getString(pref + "passport_number"));
         adult.setIssueData(rs.getDate(pref + "passport_date").toLocalDate());
-        PassportOffice po = new PassportOffice(rs.getLong(pref + "passport_office_id"), "", "");
+
+        long pOfficeId = rs.getLong(pref + "passport_office_id");
+        String pOfficeAreaId = rs.getString(pref + "p_office_area_id");
+        String pOfficeName = rs.getString(pref + "p_office_name");
+        PassportOffice po = new PassportOffice(pOfficeId, pOfficeAreaId, pOfficeName);
         adult.setIssueDepartment(po);
 
         Address address = new Address();
