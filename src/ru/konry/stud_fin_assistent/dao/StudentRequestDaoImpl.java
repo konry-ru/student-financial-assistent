@@ -42,7 +42,7 @@ public class StudentRequestDaoImpl implements StudentRequestDao
         "INNER JOIN st_register_office ro ON ro.r_office_id = sr.register_office_id " +
         "INNER JOIN st_passport_office p_h ON p_h.p_office_id = sr.h_passport_office_id " +
         "INNER JOIN st_passport_office p_w ON p_w.p_office_id = sr.w_passport_office_id " +
-        "WHERE student_request_state = 0 ORDER BY student_request_time;";
+        "WHERE student_request_state = ? ORDER BY student_request_time;";
 
     @Override
     public long saveStudentRequest(StudentRequest sr) throws DaoException {
@@ -151,6 +151,8 @@ public class StudentRequestDaoImpl implements StudentRequestDao
 
         try (Connection con = createConnection();
              PreparedStatement stmt = con.prepareStatement(SELECT_REQUEST)) {
+
+            stmt.setInt(1, StudentRequestStatus.START.ordinal());
 
             ResultSet rs = stmt.executeQuery();
 
