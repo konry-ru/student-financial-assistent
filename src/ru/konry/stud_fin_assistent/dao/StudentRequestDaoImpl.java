@@ -8,6 +8,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class StudentRequestDaoImpl implements StudentRequestDao
 {
@@ -36,13 +37,18 @@ public class StudentRequestDaoImpl implements StudentRequestDao
             ");";
 
     public static final String SELECT_REQUEST = "SELECT sr.*, ro.r_office_area_id, ro.r_office_name, " +
-        "p_h.p_office_area_id AS h_p_office_area_id, p_h.p_office_name AS h_p_office_name, " +
-        "p_w.p_office_area_id AS w_p_office_area_id, p_w.p_office_name AS w_p_office_name " +
-        "FROM st_student_request sr " +
-        "INNER JOIN st_register_office ro ON ro.r_office_id = sr.register_office_id " +
-        "INNER JOIN st_passport_office p_h ON p_h.p_office_id = sr.h_passport_office_id " +
-        "INNER JOIN st_passport_office p_w ON p_w.p_office_id = sr.w_passport_office_id " +
-        "WHERE student_request_state = ? ORDER BY student_request_time;";
+            "p_h.p_office_area_id AS h_p_office_area_id, p_h.p_office_name AS h_p_office_name, " +
+            "p_w.p_office_area_id AS w_p_office_area_id, p_w.p_office_name AS w_p_office_name " +
+            "FROM st_student_request sr " +
+            "INNER JOIN st_register_office ro ON ro.r_office_id = sr.register_office_id " +
+            "INNER JOIN st_passport_office p_h ON p_h.p_office_id = sr.h_passport_office_id " +
+            "INNER JOIN st_passport_office p_w ON p_w.p_office_id = sr.w_passport_office_id " +
+            "WHERE student_request_state = ? ORDER BY student_request_time;";
+
+    public static final String SELECT_CHILD =
+            "SELECT sc.*, so.r_office_area_id, so.r_office_name FROM st_child sc " +
+            "INNER JOIN st_register_office so ON so.r_office_id = sc.c_register_office_id " +
+            "WHERE sc.student_request_id IN ";
 
     @Override
     public long saveStudentRequest(StudentRequest sr) throws DaoException {
@@ -169,7 +175,10 @@ public class StudentRequestDaoImpl implements StudentRequestDao
                 result.add(sRequest);
             }
 
+            findChildren(con, result);
+
             rs.close();
+
         } catch (SQLException ex) {
             throw new DaoException(ex);
         }
@@ -227,6 +236,23 @@ public class StudentRequestDaoImpl implements StudentRequestDao
 
         return adult;
     }
+
+    private void findChildren(Connection con, List<StudentRequest> result) throws SQLException {
+        String cl = "(" +
+                result.stream().
+                        map(req -> String.valueOf(req.getStudentRequestId())).
+                        collect(Collectors.joining(",")) +
+                ")";
+        try ( PreparedStatement stmt = con.prepareStatement(SELECT_CHILD + cl)) {
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                System.out.println(rs.getLong(1) + " : " + rs.getString(3));
+            }
+        }
+    }
+
 
 //    TODO create one method for all Connections
 
