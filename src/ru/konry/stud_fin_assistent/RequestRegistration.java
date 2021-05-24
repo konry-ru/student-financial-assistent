@@ -68,14 +68,14 @@ public class RequestRegistration {
     }
 
     public static void main(String[] args) {
-        StudentRequest studentRequest = createStudentRequest(10);
+//        StudentRequest studentRequest = createStudentRequest(10);
         try {
             StudentRequestDao sDao = new StudentRequestDaoImpl();
-            long requestId = sDao.saveStudentRequest(studentRequest);
+//            long requestId = sDao.saveStudentRequest(studentRequest);
             List<StudentRequest> studentRequests = sDao.getStudentRequests();
 
-            System.out.println("Id of the last request: " + requestId);
-            System.out.println("=====================");
+//            System.out.println("Id of the last request: " + requestId);
+//            System.out.println("=====================");
 
             System.out.println("Последовательное получение заявок.");
             for (StudentRequest sr :

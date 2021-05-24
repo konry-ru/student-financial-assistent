@@ -5,9 +5,11 @@ import ru.konry.stud_fin_assistent.domains.*;
 import ru.konry.stud_fin_assistent.exceptions.DaoException;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class StudentRequestDaoImpl implements StudentRequestDao
@@ -185,6 +187,28 @@ public class StudentRequestDaoImpl implements StudentRequestDao
         return result;
     }
 
+    private void findChildren(Connection con, List<StudentRequest> result) throws SQLException {
+        String param = "(" +
+                result.stream().
+                        map(req -> String.valueOf(req.getStudentRequestId())).
+                        collect(Collectors.joining(",")) +
+                ")";
+        Map<Long, StudentRequest> maps = result.stream().collect(Collectors
+                .toMap(so -> so.getStudentRequestId(), so -> so));
+
+        try ( PreparedStatement stmt = con.prepareStatement(SELECT_CHILD + param)) {
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Child ch = fillChild(rs);
+                StudentRequest sr = maps.get(rs.getLong("student_request_id"));
+                sr.addChild(ch);
+            }
+        }
+    }
+
+
     private void fillRequestHeader(StudentRequest sRequest, ResultSet rs) throws SQLException {
 
         sRequest.setStudentRequestId(rs.getLong("student_request_id"));
@@ -237,20 +261,34 @@ public class StudentRequestDaoImpl implements StudentRequestDao
         return adult;
     }
 
-    private void findChildren(Connection con, List<StudentRequest> result) throws SQLException {
-        String cl = "(" +
-                result.stream().
-                        map(req -> String.valueOf(req.getStudentRequestId())).
-                        collect(Collectors.joining(",")) +
-                ")";
-        try ( PreparedStatement stmt = con.prepareStatement(SELECT_CHILD + cl)) {
+    private Child fillChild(ResultSet rs) throws SQLException {
 
-            ResultSet rs = stmt.executeQuery();
+        String surName = rs.getString("c_sur_name");
+        String givenName = rs.getString("c_given_name");
+        String patronymic = rs.getString("c_patronymic");
+        LocalDate dateOfBirth = rs.getDate("c_birth_data").toLocalDate();
 
-            while (rs.next()) {
-                System.out.println(rs.getLong(1) + " : " + rs.getString(3));
-            }
-        }
+        Child ch = new Child(surName, givenName, patronymic, dateOfBirth);
+
+        ch.setCertificateId(rs.getString("c_certificate_number"));
+        ch.setIssueData(rs.getDate("c_certificate_date").toLocalDate());
+
+        Long roId = rs.getLong("c_register_office_id");
+        String roAreaId = rs.getString(("r_office_area_id"));
+        String roName = rs.getString(("r_office_name"));
+        RegisterOffice ro = new RegisterOffice(roId, roAreaId, roName);
+        ch.setIssueDepartment(ro);
+
+        Address address = new Address();
+        address.setPostalCode(rs.getString("c_postal_code"));
+        Street street = new Street(rs.getLong("c_street_code"), "");
+        address.setStreet(street);
+        address.setBuilding(rs.getString("c_building"));
+        address.setCorpus(rs.getString("c_corpus"));
+        address.setApartment(rs.getString("c_apartment"));
+        ch.setAddress(address);
+
+        return ch;
     }
 
 
