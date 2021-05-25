@@ -46,7 +46,7 @@ public class StudentRequestDaoImpl implements StudentRequestDao
             "INNER JOIN st_register_office ro ON ro.r_office_id = sr.register_office_id " +
             "INNER JOIN st_passport_office p_h ON p_h.p_office_id = sr.h_passport_office_id " +
             "INNER JOIN st_passport_office p_w ON p_w.p_office_id = sr.w_passport_office_id " +
-            "WHERE student_request_state = ? ORDER BY student_request_time;";
+            "WHERE student_request_state = ? ORDER BY student_request_time LIMIT ?;";
 
     public static final String SELECT_CHILD =
             "SELECT sc.*, so.r_office_area_id, so.r_office_name FROM st_child sc " +
@@ -63,7 +63,7 @@ public class StudentRequestDaoImpl implements StudentRequestDao
             "INNER JOIN st_passport_office p_w ON p_w.p_office_id = sr.w_passport_office_id " +
             "INNER JOIN st_child sc ON sr.student_request_id = sc.student_request_id " +
             "INNER JOIN st_register_office ro_c ON ro_c.r_office_id = sc.c_register_office_id " +
-            "WHERE student_request_state = ? ORDER BY student_request_time;";
+            "WHERE student_request_state = ? ORDER BY sr.student_request_id LIMIT ?;";
 
     @Override
     public long saveStudentRequest(StudentRequest sr) throws DaoException {
@@ -174,12 +174,16 @@ public class StudentRequestDaoImpl implements StudentRequestDao
 
     private List<StudentRequest> getByOneSelectStudentRequests() throws DaoException {
 
-        List<StudentRequest> result;
+        List<StudentRequest> result = new LinkedList<>();
 
         try (Connection con = createConnection();
              PreparedStatement stmt = con.prepareStatement(SELECT_REQUESTS_FULL)) {
 
+            int limit = Integer.parseInt(Config.getProperty(Config.DB_LIMIT));
+            int counter = 0;
+
             stmt.setInt(1, StudentRequestStatus.START.ordinal());
+            stmt.setInt(2, limit);
 
             ResultSet rs = stmt.executeQuery();
 
@@ -194,12 +198,17 @@ public class StudentRequestDaoImpl implements StudentRequestDao
                     sRequest = getFullStudentRequest(rs);
 
                     requestHashMap.put(srId, sRequest);
+                    result.add(sRequest);
                 }
                 sRequest = requestHashMap.get(srId);
                 sRequest.addChild(fillChild(rs));
-            }
 
-            result = new LinkedList<>(requestHashMap.values());
+                counter++;
+            };
+
+            if (counter >= limit) {
+                result.remove(result.size() - 1);
+            }
 
             rs.close();
 
@@ -216,6 +225,7 @@ public class StudentRequestDaoImpl implements StudentRequestDao
              PreparedStatement stmt = con.prepareStatement(SELECT_REQUESTS)) {
 
             stmt.setInt(1, StudentRequestStatus.START.ordinal());
+            stmt.setInt(2, Integer.parseInt(Config.getProperty(Config.DB_LIMIT)));
 
             ResultSet rs = stmt.executeQuery();
 
