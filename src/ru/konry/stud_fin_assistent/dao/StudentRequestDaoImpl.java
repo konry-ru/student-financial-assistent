@@ -7,6 +7,7 @@ import ru.konry.stud_fin_assistent.exceptions.DaoException;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class StudentRequestDaoImpl implements StudentRequestDao
             "?, ?, ?, ?, ?" +
             ");";
 
-    public static final String SELECT_REQUEST = "SELECT sr.*, ro.r_office_area_id, ro.r_office_name, " +
+    public static final String SELECT_REQUESTS = "SELECT sr.*, ro.r_office_area_id, ro.r_office_name, " +
             "p_h.p_office_area_id AS h_p_office_area_id, p_h.p_office_name AS h_p_office_name, " +
             "p_w.p_office_area_id AS w_p_office_area_id, p_w.p_office_name AS w_p_office_name " +
             "FROM st_student_request sr " +
@@ -51,6 +52,18 @@ public class StudentRequestDaoImpl implements StudentRequestDao
             "SELECT sc.*, so.r_office_area_id, so.r_office_name FROM st_child sc " +
             "INNER JOIN st_register_office so ON so.r_office_id = sc.c_register_office_id " +
             "WHERE sc.student_request_id IN ";
+
+    public static final String SELECT_REQUESTS_FULL = "SELECT sr.*, ro.r_office_area_id, ro.r_office_name, " +
+            "p_h.p_office_area_id AS h_p_office_area_id, p_h.p_office_name AS h_p_office_name, " +
+            "p_w.p_office_area_id AS w_p_office_area_id, p_w.p_office_name AS w_p_office_name, " +
+            "sc.*, ro_c.r_office_area_id, ro_c.r_office_name " +
+            "FROM st_student_request sr " +
+            "INNER JOIN st_register_office ro ON ro.r_office_id = sr.register_office_id " +
+            "INNER JOIN st_passport_office p_h ON p_h.p_office_id = sr.h_passport_office_id " +
+            "INNER JOIN st_passport_office p_w ON p_w.p_office_id = sr.w_passport_office_id " +
+            "INNER JOIN st_child sc ON sr.student_request_id = sc.student_request_id " +
+            "INNER JOIN st_register_office ro_c ON ro_c.r_office_id = sc.c_register_office_id " +
+            "WHERE student_request_state = ? ORDER BY student_request_time;";
 
     @Override
     public long saveStudentRequest(StudentRequest sr) throws DaoException {
@@ -155,10 +168,52 @@ public class StudentRequestDaoImpl implements StudentRequestDao
     @Override
     public List<StudentRequest> getStudentRequests() throws DaoException {
 
+        return getByOneSelectStudentRequests();
+//        return getByTwoSelectStudentRequests();
+    }
+
+    private List<StudentRequest> getByOneSelectStudentRequests() throws DaoException {
+
+        List<StudentRequest> result;
+
+        try (Connection con = createConnection();
+             PreparedStatement stmt = con.prepareStatement(SELECT_REQUESTS_FULL)) {
+
+            stmt.setInt(1, StudentRequestStatus.START.ordinal());
+
+            ResultSet rs = stmt.executeQuery();
+
+            HashMap<Long, StudentRequest> requestHashMap = new HashMap<>();
+
+            while (rs.next()) {
+
+                StudentRequest sRequest;
+                Long srId = rs.getLong("student_request_id");
+
+                if (!requestHashMap.containsKey(srId)) {
+                    sRequest = getFullStudentRequest(rs);
+
+                    requestHashMap.put(srId, sRequest);
+                }
+                sRequest = requestHashMap.get(srId);
+                sRequest.addChild(fillChild(rs));
+            }
+
+            result = new LinkedList<>(requestHashMap.values());
+
+            rs.close();
+
+        } catch (SQLException ex) {
+            throw new DaoException(ex);
+        }
+        return result;
+    }
+
+    private List<StudentRequest> getByTwoSelectStudentRequests() throws DaoException {
         List<StudentRequest> result = new LinkedList<>();
 
         try (Connection con = createConnection();
-             PreparedStatement stmt = con.prepareStatement(SELECT_REQUEST)) {
+             PreparedStatement stmt = con.prepareStatement(SELECT_REQUESTS)) {
 
             stmt.setInt(1, StudentRequestStatus.START.ordinal());
 
@@ -169,10 +224,8 @@ public class StudentRequestDaoImpl implements StudentRequestDao
 
                 fillRequestHeader(sRequest, rs);
                 fillWedding(sRequest, rs);
-                Adult husband = fillAdult(rs, "h_");
-                Adult wife = fillAdult(rs, "w_");
-                sRequest.setHusband(husband);
-                sRequest.setWife(wife);
+                sRequest.setHusband(fillAdult(rs, "h_"));
+                sRequest.setWife(fillAdult(rs, "w_"));
 
                 result.add(sRequest);
             }
@@ -187,27 +240,17 @@ public class StudentRequestDaoImpl implements StudentRequestDao
         return result;
     }
 
-    private void findChildren(Connection con, List<StudentRequest> result) throws SQLException {
-        String param = "(" +
-                result.stream().
-                        map(req -> String.valueOf(req.getStudentRequestId())).
-                        collect(Collectors.joining(",")) +
-                ")";
-        Map<Long, StudentRequest> maps = result.stream().collect(Collectors
-                .toMap(so -> so.getStudentRequestId(), so -> so));
+    private StudentRequest getFullStudentRequest(ResultSet rs) throws SQLException {
 
-        try ( PreparedStatement stmt = con.prepareStatement(SELECT_CHILD + param)) {
+        StudentRequest sRequest = new StudentRequest();
 
-            ResultSet rs = stmt.executeQuery();
+        fillRequestHeader(sRequest, rs);
+        fillWedding(sRequest, rs);
+        sRequest.setHusband(fillAdult(rs, "h_"));
+        sRequest.setWife(fillAdult(rs, "w_"));
 
-            while (rs.next()) {
-                Child ch = fillChild(rs);
-                StudentRequest sr = maps.get(rs.getLong("student_request_id"));
-                sr.addChild(ch);
-            }
-        }
+        return sRequest;
     }
-
 
     private void fillRequestHeader(StudentRequest sRequest, ResultSet rs) throws SQLException {
 
@@ -259,6 +302,27 @@ public class StudentRequestDaoImpl implements StudentRequestDao
         adult.setStudentId(pref + "student_id");
 
         return adult;
+    }
+
+    private void findChildren(Connection con, List<StudentRequest> result) throws SQLException {
+        String param = "(" +
+                result.stream().
+                        map(req -> String.valueOf(req.getStudentRequestId())).
+                        collect(Collectors.joining(",")) +
+                ")";
+        Map<Long, StudentRequest> maps = result.stream().collect(Collectors
+                .toMap(so -> so.getStudentRequestId(), so -> so));
+
+        try ( PreparedStatement stmt = con.prepareStatement(SELECT_CHILD + param)) {
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Child ch = fillChild(rs);
+                StudentRequest sr = maps.get(rs.getLong("student_request_id"));
+                sr.addChild(ch);
+            }
+        }
     }
 
     private Child fillChild(ResultSet rs) throws SQLException {
