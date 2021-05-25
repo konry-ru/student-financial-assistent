@@ -179,6 +179,7 @@ public class StudentRequestDaoImpl implements StudentRequestDao
         try (Connection con = createConnection();
              PreparedStatement stmt = con.prepareStatement(SELECT_REQUESTS_FULL)) {
 
+//            Limit on the number of request received at a time
             int limit = Integer.parseInt(Config.getProperty(Config.DB_LIMIT));
             int counter = 0;
 
@@ -187,6 +188,7 @@ public class StudentRequestDaoImpl implements StudentRequestDao
 
             ResultSet rs = stmt.executeQuery();
 
+//            Indicator - create a request or just add another child
             HashMap<Long, StudentRequest> requestHashMap = new HashMap<>();
 
             while (rs.next()) {
