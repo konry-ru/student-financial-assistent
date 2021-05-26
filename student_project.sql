@@ -106,7 +106,12 @@ CREATE TABLE st_child (
     c_corpus varchar(10),
     c_apartment varchar(10),
     PRIMARY KEY(child_id),
+    FOREIGN KEY(student_request_id) REFERENCES st_student_request(student_request_id) ON DELETE RESTRICT,
     FOREIGN KEY(c_street_code) REFERENCES st_street(street_code) ON DELETE RESTRICT,
     FOREIGN KEY(c_register_office_id) REFERENCES st_register_office(r_office_id) ON DELETE RESTRICT
-)
+);
+
+CREATE INDEX idx_student_request_state ON st_student_request(student_request_state);
+
+CREATE INDEX idx_student_request_id ON st_child(student_request_id);
 
